@@ -25,14 +25,14 @@ export class UserService {
     return { id: user.id, nome, username, email, token }
   }
 
-  async login(post_schema_login: post_schema_login): Promise<{ token: string, email_ou_username: string }> {
+  async login(post_schema_login: post_schema_login): Promise<{ token: string, email_ou_username: string, id: any }> {
     const { email_ou_username, senha } = post_schema_login
     const user = await this.userModel.findOne({ $or: [{ email: email_ou_username }, { username: email_ou_username }] })
     if (!user) { throw new UnauthorizedException('Email, username ou senha inválidos') }
     const isPasswordMatched = await bcrypt.compare(senha, user.senha)
     if (!isPasswordMatched) { throw new UnauthorizedException('Email, username ou senha inválidos') }
     const token = this.jwtService.sign({ id: user._id })
-    return { email_ou_username, token }
+    return { id: user._id, email_ou_username, token }
   }
 
   async findAll(): Promise<User[]> {

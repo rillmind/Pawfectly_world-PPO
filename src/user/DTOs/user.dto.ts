@@ -10,7 +10,7 @@ export class post_schema_user {
   readonly username: string
 
   @IsNotEmpty()
-  @IsEmail({}, { message: 'Please enter correct email' })
+  @IsEmail()
   readonly email: string
 
   @IsNotEmpty()
