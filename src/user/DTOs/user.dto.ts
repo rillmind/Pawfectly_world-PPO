@@ -1,6 +1,6 @@
 import { IsEmail, IsNotEmpty, IsString, MinLength } from 'class-validator';
 
-export class post_schema_user {
+export class Post_schema_user {
   @IsNotEmpty()
   @IsString()
   readonly nome: string

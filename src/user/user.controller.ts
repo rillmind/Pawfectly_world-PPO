@@ -1,7 +1,7 @@
 import { Body, Controller, Get, HttpStatus, HttpCode, Post, UseGuards, NotFoundException, Param, Delete, Patch } from '@nestjs/common';
 import { UserService } from './user.service';
-import { post_schema_login } from './DTOs/login.dto';
-import { post_schema_user } from './DTOs/user.dto';
+import { Post_schema_login } from './DTOs/login.dto';
+import { Post_schema_user } from './DTOs/user.dto';
 import { User } from './schemas/user.schemas';
 import { AuthGuard } from '@nestjs/passport';
 
@@ -11,13 +11,13 @@ export class UserController {
 
   @Post('/signup')
   @HttpCode(HttpStatus.CREATED)
-  signUp(@Body() post_schema_user: post_schema_user): Promise<{ token: string }> {
+  signUp(@Body() post_schema_user: Post_schema_user): Promise<{ token: string }> {
     return this.userService.signUp(post_schema_user)
   }
 
   @Post('/login')
   @HttpCode(HttpStatus.OK)
-  login(@Body() post_schema_login: post_schema_login): Promise<{ token: string }> {
+  login(@Body() post_schema_login: Post_schema_login): Promise<{ token: string }> {
     return this.userService.login(post_schema_login)
   }
 

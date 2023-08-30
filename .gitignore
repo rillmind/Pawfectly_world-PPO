@@ -36,3 +36,7 @@ lerna-debug.log*
 
 #Comentário
 comments.txt
+
+#Arquivos do nest
+.prettierrc
+README.md
