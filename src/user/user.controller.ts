@@ -11,13 +11,13 @@ export class UserController {
 
   @Post('/signup')
   @HttpCode(HttpStatus.CREATED)
-  signUp(@Body() post_schema_user: Post_schema_user): Promise<{ token: string }> {
+  public async signUp(@Body() post_schema_user: Post_schema_user): Promise<{ token: string }> {
     return this.userService.signUp(post_schema_user)
   }
 
   @Post('/login')
   @HttpCode(HttpStatus.OK)
-  login(@Body() post_schema_login: Post_schema_login): Promise<{ token: string }> {
+  public async login(@Body() post_schema_login: Post_schema_login): Promise<{ token: string }> {
     return this.userService.login(post_schema_login)
   }
 
@@ -29,7 +29,7 @@ export class UserController {
   }
 
   @Get(':id')
-  async findById(@Param('id') id: string) {
+  public async findById(@Param('id') id: string) {
     try {
       const document = await this.userService.findById(id)
       return document
@@ -39,7 +39,7 @@ export class UserController {
   }
 
   @Delete(':id')
-  async deleteById(@Param('id') id: string) {
+  public async deleteById(@Param('id') id: string) {
     try {
       const deletedDocument = await this.userService.deleteById(id)
       return deletedDocument
@@ -48,7 +48,7 @@ export class UserController {
   }
 
   @Patch(':id')
-  async patchById(@Param('id') id: string, @Body() partialUpdate: Partial<User>) {
+  public async patchById(@Param('id') id: string, @Body() partialUpdate: Partial<User>) {
     try {
       const updatedDocument = await this.userService.patchById(id, partialUpdate)
       return updatedDocument

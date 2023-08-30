@@ -17,7 +17,7 @@ export class UserService {
     private jwtService: JwtService,
   ) { }
 
-  async signUp(post_schema_user: Post_schema_user): Promise<{ token: string, nome: string, email: string, username: string, id: any }> {
+  public async signUp(post_schema_user: Post_schema_user): Promise<{ token: string, nome: string, email: string, username: string, id: any }> {
     const { nome, username, email, senha } = post_schema_user
     const hashedPassword = await bcrypt.hash(senha, 10)
     const user = await this.userModel.create({ nome, username, email, senha: hashedPassword })
@@ -25,7 +25,7 @@ export class UserService {
     return { id: user.id, nome, username, email, token }
   }
 
-  async login(post_schema_login: Post_schema_login): Promise<{ token: string, email_ou_username: string, id: any }> {
+  public async login(post_schema_login: Post_schema_login): Promise<{ token: string, email_ou_username: string, id: any }> {
     const { email_ou_username, senha } = post_schema_login
     const user = await this.userModel.findOne({ $or: [{ email: email_ou_username }, { username: email_ou_username }] })
     if (!user) { throw new UnauthorizedException('Email, username ou senha inválidos') }
@@ -35,11 +35,11 @@ export class UserService {
     return { id: user._id,email_ou_username, token }
   }
 
-  async findAll(): Promise<User[]> {
+  public async findAll(): Promise<User[]> {
     return this.userModel.find()
   }
 
-  async findById(id: string): Promise<User> {
+  public async findById(id: string): Promise<User> {
     try {
       const document = await this.userModel.findById(id).exec()
       if (!document) { throw new NotFoundException(`Document com ID ${id} não encontrado!`) }
@@ -48,14 +48,14 @@ export class UserService {
     catch (error) { throw new NotFoundException(`Document com ID ${id} não encontrado!`) }
   }
 
-  async deleteById(id: string): Promise<User> {
+  public async deleteById(id: string): Promise<User> {
     const document = await this.findById(id)
     if (!document) { throw new NotFoundException(`Document com ID ${id} não encontrado!`) }
     const deletedDocument = await this.userModel.findByIdAndRemove(id).exec()
     return deletedDocument;
   }
 
-  async patchById(id: string, partialUpdate: Partial<User>): Promise<User> {
+  public async patchById(id: string, partialUpdate: Partial<User>): Promise<User> {
     const document = await this.findById(id)
     if (!document) { throw new NotFoundException(`Document com ID ${id} não encontrado!`) }
     Object.assign(document, partialUpdate)
