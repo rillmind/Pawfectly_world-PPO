@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, ConflictException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { User } from './schemas/user.schemas';
@@ -12,13 +12,15 @@ import { JwtPayload } from './jwt/jwt-payload.model';
 @Injectable()
 export class UserService {
   constructor(
-    @InjectModel(User.name)
+    @InjectModel('User')
     private userModel: Model<User>,
     private jwtService: JwtService,
   ) { }
 
   public async signUp(post_schema_user: Post_schema_user): Promise<{ token: string, nome: string, email: string, username: string, id: any }> {
     const { nome, username, email, senha } = post_schema_user
+    const existingUser = await this.userModel.findOne({ $or: [{ email }, { username }] })
+    if (existingUser) { throw new ConflictException('Email ou username já existentes!') }
     const hashedPassword = await bcrypt.hash(senha, 10)
     const user = await this.userModel.create({ nome, username, email, senha: hashedPassword })
     const token = this.jwtService.sign({ id: user._id })
@@ -65,7 +67,7 @@ export class UserService {
 
   private static jwtExtractor(request: Request): string {
     const authHeader = request.headers.authorization
-    if (!authHeader) { throw new BadRequestException('Bad request.') }
+    if (!authHeader) { throw new BadRequestException('Token inválido ou inexistente!') }
     const [, token] = authHeader.split(' ')
     return token
   }
