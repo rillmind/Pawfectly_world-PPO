@@ -1,4 +1,4 @@
-import { BadRequestException, ConflictException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, ConflictException, Injectable, NotFoundException, UnauthorizedException, UnprocessableEntityException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { User } from './schemas/user.schemas';
@@ -19,6 +19,7 @@ export class UserService {
 
   public async signUp(post_schema_user: Post_schema_user): Promise<{ token: string, nome: string, email: string, username: string, id: any }> {
     const { nome, username, email, senha } = post_schema_user
+    if (senha.length < 6) { throw new UnprocessableEntityException('A senha deve ter pelo menos 6 caracteres') }
     const existingUser = await this.userModel.findOne({ $or: [{ email }, { username }] })
     if (existingUser) { throw new ConflictException('Email ou username já existentes!') }
     const hashedPassword = await bcrypt.hash(senha, 10)
