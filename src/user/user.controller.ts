@@ -21,14 +21,14 @@ export class UserController {
     return this.userService.login(post_schema_login)
   }
 
-  @Get()
+  @Get('list')
   @UseGuards(AuthGuard())
   @HttpCode(HttpStatus.OK)
   public async findAll(): Promise<User[]> {
     return this.userService.findAll()
   }
 
-  @Get(':id')
+  @Get('find/:id')
   public async findById(@Param('id') id: string) {
     try {
       const document = await this.userService.findById(id)
@@ -38,7 +38,7 @@ export class UserController {
     }
   }
 
-  @Delete(':id')
+  @Delete('delete/:id')
   public async deleteById(@Param('id') id: string) {
     try {
       const deletedDocument = await this.userService.deleteById(id)
@@ -47,7 +47,7 @@ export class UserController {
     catch (error) { throw new NotFoundException(error.message) }
   }
 
-  @Patch(':id')
+  @Patch('update/:id')
   public async patchById(@Param('id') id: string, @Body() partialUpdate: Partial<User>) {
     try {
       const updatedDocument = await this.userService.patchById(id, partialUpdate)
