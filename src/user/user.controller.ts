@@ -1,9 +1,11 @@
 import { Body, Controller, Get, HttpStatus, HttpCode, Post, UseGuards, NotFoundException, Param, Delete, Patch } from '@nestjs/common';
 import { UserService } from './user.service';
-import { Post_schema_login } from './DTOs/login.dto';
 import { Post_schema_user } from './DTOs/user.dto';
-import { User } from './schemas/user.schemas';
+import { Post_schema_login } from './DTOs/login.dto';
 import { AuthGuard } from '@nestjs/passport';
+import { RoleGuard } from './roles/role.guard';
+import { User } from './schemas/user.schemas';
+import { Roles } from './roles/roles.decorator';
 
 @Controller('user')
 export class UserController {
@@ -21,8 +23,9 @@ export class UserController {
     return this.userService.login(post_schema_login)
   }
 
+  @Roles('adm')
   @Get('list')
-  @UseGuards(AuthGuard())
+  @UseGuards(AuthGuard, RoleGuard)
   @HttpCode(HttpStatus.OK)
   public async findAll(): Promise<User[]> {
     return this.userService.findAll()
