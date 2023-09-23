@@ -11,7 +11,7 @@ export class AnimalService {
         private animalModel: Model<Animal>
     ) { }
 
-    public async createAnimal(post_schema_animal: Post_schema_animal): Promise<{ id: any, dono: string, nome: string, adocao: any }> {
+    public async createAnimal(post_schema_animal: Post_schema_animal): Promise<{ id: any, dono: any, nome: string, adocao: any }> {
         const { dono, nome, idade, tipo, raca, sexo, descricao, adocao } = post_schema_animal
         const animal = await this.animalModel.create({ dono, nome, idade, tipo, raca, sexo, descricao, adocao })
         return { id: animal._id, dono, nome, adocao }

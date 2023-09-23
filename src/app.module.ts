@@ -1,10 +1,9 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { UserModule } from './user/user.module';
 import { AnimalModule } from './animal/animal.module';
+import { AdocaoModule } from './adocao/adocao.module';
 
 @Module({
   imports: [
@@ -12,8 +11,7 @@ import { AnimalModule } from './animal/animal.module';
     MongooseModule.forRoot(process.env.MONGO_URI),
     UserModule,
     AnimalModule,
-  ],
-  controllers: [AppController],
-  providers: [AppService],
+    AdocaoModule,
+  ]
 })
-export class AppModule {}
+export class AppModule { }

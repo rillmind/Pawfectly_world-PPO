@@ -1,9 +1,10 @@
 import { IsNotEmpty, IsString } from "class-validator"
+import { User } from "src/user/schemas/user.schemas"
 
 export class Post_schema_animal {
     @IsNotEmpty()
     @IsString()
-    readonly dono: string
+    readonly dono: User["_id"]
   
     @IsNotEmpty()
     @IsString()

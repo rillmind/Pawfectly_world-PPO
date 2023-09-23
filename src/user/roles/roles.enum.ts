@@ -1,4 +1,5 @@
 export enum Role {
     adm = 'Administrador',
-    cm = 'Usuário comum'
+    cm = 'Usuário comum',
+    dn = 'Dono'
 }

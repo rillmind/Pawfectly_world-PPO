@@ -38,6 +38,7 @@ export class User extends Document {
     rua: string;
     numero: string;
   }
+    static _id: any;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User)
