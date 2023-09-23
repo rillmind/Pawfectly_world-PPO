@@ -22,7 +22,7 @@ export class UserController {
   }
 
   @Get('list')
-  @UseGuards(AuthGuard)
+  @UseGuards(AuthGuard())
   @HttpCode(HttpStatus.OK)
   public async findAll(): Promise<User[]> {
     return this.userService.findAll()
