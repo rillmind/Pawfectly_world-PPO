@@ -8,11 +8,8 @@ import { AnimalModule } from './animal/animal.module';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({
-      envFilePath: '.env',
-      isGlobal: true,
-    }),
-    MongooseModule.forRoot(process.env.MONGO_URI_ATLAS),
+    ConfigModule.forRoot({ envFilePath: '.env', isGlobal: true }),
+    MongooseModule.forRoot(process.env.MONGO_URI),
     UserModule,
     AnimalModule,
   ],

@@ -19,7 +19,7 @@ export class UserService {
 
   public async signUp(post_schema_user: Post_schema_user): Promise<{ token: string, nome: string, email: string, username: string, id: any }> {
     const { nome, username, email, senha } = post_schema_user
-    if (!nome || !username || !email || !senha) { throw new BadRequestException('Todos os campos precisam ser preenchidos!') }
+    if (!nome || !username || !email || !senha) { throw new UnprocessableEntityException('Todos os campos precisam ser preenchidos!') }
     if (senha.length < 6) { throw new UnprocessableEntityException('A senha deve ter pelo menos 6 caracteres') }
     const existingUser = await this.userModel.findOne({ $or: [{ email }, { username }] })
     if (existingUser) { throw new ConflictException('Email ou username já existentes!') }
@@ -31,12 +31,13 @@ export class UserService {
 
   public async login(post_schema_login: Post_schema_login): Promise<{ token: string, email_ou_username: string, id: any }> {
     const { email_ou_username, senha } = post_schema_login
+    if (!email_ou_username || !senha) { throw new UnprocessableEntityException('Todos os campos precisam ser preenchidos!') }
     const user = await this.userModel.findOne({ $or: [{ email: email_ou_username }, { username: email_ou_username }] })
     if (!user) { throw new UnauthorizedException('Email, username ou senha inválidos') }
     const isPasswordMatched = await bcrypt.compare(senha, user.senha)
     if (!isPasswordMatched) { throw new UnauthorizedException('Email, username ou senha inválidos') }
     const token = this.jwtService.sign({ id: user._id })
-    return { id: user._id,email_ou_username, token }
+    return { id: user._id, email_ou_username, token }
   }
 
   public async findAll(): Promise<User[]> {
@@ -48,15 +49,8 @@ export class UserService {
       const document = await this.userModel.findById(id).exec()
       if (!document) { throw new NotFoundException(`Document com ID ${id} não encontrado!`) }
       return document
-    } 
+    }
     catch (error) { throw new NotFoundException(`Document com ID ${id} não encontrado!`) }
-  }
-
-  public async deleteById(id: string): Promise<User> {
-    const document = await this.findById(id)
-    if (!document) { throw new NotFoundException(`Document com ID ${id} não encontrado!`) }
-    const deletedDocument = await this.userModel.findByIdAndRemove(id).exec()
-    return deletedDocument;
   }
 
   public async patchById(id: string, partialUpdate: Partial<User>): Promise<User> {
@@ -65,6 +59,13 @@ export class UserService {
     Object.assign(document, partialUpdate)
     const updatedDocument = await document.save()
     return updatedDocument
+  }
+
+  public async deleteById(id: string): Promise<User> {
+    const document = await this.findById(id)
+    if (!document) { throw new NotFoundException(`Document com ID ${id} não encontrado!`) }
+    const deletedDocument = await this.userModel.findByIdAndRemove(id).exec()
+    return deletedDocument;
   }
 
   private static jwtExtractor(request: Request): string {

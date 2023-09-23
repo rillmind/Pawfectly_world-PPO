@@ -30,5 +30,5 @@ export class Post_schema_animal {
   
     @IsNotEmpty()
     @IsString()
-    readonly adocao_ativa: boolean
+    readonly adocao: boolean
   }
