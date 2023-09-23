@@ -17,6 +17,9 @@ export class User extends Document {
   @Prop({ required: true })
   senha: string
 
+  @Prop({ required: true })
+  role: string
+
   @Prop()
   cpf_ou_cnpj: string
 

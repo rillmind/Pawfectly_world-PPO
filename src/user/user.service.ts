@@ -17,16 +17,16 @@ export class UserService {
     private jwtService: JwtService,
   ) { }
 
-  public async signUp(post_schema_user: Post_schema_user): Promise<{ token: string, nome: string, email: string, username: string, id: any }> {
-    const { nome, username, email, senha } = post_schema_user
+  public async signUp(post_schema_user: Post_schema_user): Promise<{ token: string, nome: string, email: string, username: string, id: any, role: string }> {
+    const { nome, username, email, senha, role } = post_schema_user
     if (!nome) { throw new BadRequestException('Todos os campos precisam ser preenchidos!') }
     if (senha.length < 6) { throw new UnprocessableEntityException('A senha deve ter pelo menos 6 caracteres') }
     const existingUser = await this.userModel.findOne({ $or: [{ email }, { username }] })
     if (existingUser) { throw new ConflictException('Email ou username já existentes!') }
     const hashedPassword = await bcrypt.hash(senha, 10)
-    const user = await this.userModel.create({ nome, username, email, senha: hashedPassword })
+    const user = await this.userModel.create({ nome, username, email, senha: hashedPassword, role })
     const token = this.jwtService.sign({ id: user._id })
-    return { id: user._id, nome, username, email, token }
+    return { id: user._id, nome, username, email, token, role }
   }
 
   public async login(post_schema_login: Post_schema_login): Promise<{ token: string, email_ou_username: string, id: any }> {

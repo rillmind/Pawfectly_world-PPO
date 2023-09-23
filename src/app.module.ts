@@ -12,7 +12,7 @@ import { AnimalModule } from './animal/animal.module';
       envFilePath: '.env',
       isGlobal: true,
     }),
-    MongooseModule.forRoot(process.env.MONGO_URI_ATLAS),
+    MongooseModule.forRoot(process.env.MONGO_URI),
     UserModule,
     AnimalModule,
   ],

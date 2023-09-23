@@ -23,9 +23,9 @@ export class UserController {
     return this.userService.login(post_schema_login)
   }
 
-  @Roles('adm')
   @Get('list')
-  @UseGuards(AuthGuard, RoleGuard)
+  @Roles('adm')
+  @UseGuards(AuthGuard(), RoleGuard)
   @HttpCode(HttpStatus.OK)
   public async findAll(): Promise<User[]> {
     return this.userService.findAll()
