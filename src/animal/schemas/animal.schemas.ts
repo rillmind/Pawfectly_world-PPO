@@ -25,7 +25,7 @@ export class Animal extends Document {
     descricao: string
 
     @Prop({ required: true })
-    adocao_ativa: boolean
+    adocao: boolean
 }
 
 export const AnimalSchema = SchemaFactory.createForClass(Animal)

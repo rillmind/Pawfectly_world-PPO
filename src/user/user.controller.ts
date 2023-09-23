@@ -9,7 +9,7 @@ import { Roles } from './roles/roles.decorator';
 
 @Controller('user')
 export class UserController {
-  constructor(private userService: UserService) {}
+  constructor(private userService: UserService) { }
 
   @Post('/signup')
   @HttpCode(HttpStatus.CREATED)
@@ -41,16 +41,8 @@ export class UserController {
     }
   }
 
-  @Delete('delete/:id')
-  public async deleteById(@Param('id') id: string) {
-    try {
-      const deletedDocument = await this.userService.deleteById(id)
-      return deletedDocument
-    } 
-    catch (error) { throw new NotFoundException(error.message) }
-  }
-
   @Patch('update/:id')
+  @HttpCode(HttpStatus.NO_CONTENT)
   public async patchById(@Param('id') id: string, @Body() partialUpdate: Partial<User>) {
     try {
       const updatedDocument = await this.userService.patchById(id, partialUpdate)
@@ -58,5 +50,15 @@ export class UserController {
     } catch (error) {
       throw new NotFoundException(error.message)
     }
+  }
+
+  @Delete('delete/:id')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  public async deleteById(@Param('id') id: string) {
+    try {
+      const deletedDocument = await this.userService.deleteById(id)
+      return deletedDocument
+    }
+    catch (error) { throw new NotFoundException(error.message) }
   }
 }
