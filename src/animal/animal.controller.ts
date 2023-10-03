@@ -7,19 +7,19 @@ import { Animal } from './schemas/animal.schemas';
 export class AnimalController {
     constructor(private animalService: AnimalService) { }
 
-    @Post('create')
+    @Post()
     @HttpCode(HttpStatus.CREATED)
     public async signUp(@Body() post_schema_animal: Post_schema_animal): Promise<{ nome: string }> {
         return this.animalService.createAnimal(post_schema_animal)
     }
 
-    @Get('list')
+    @Get()
     @HttpCode(HttpStatus.OK)
     public async findAll(): Promise<Animal[]> {
         return this.animalService.findAll()
     }
 
-    @Get('find/:id')
+    @Get(':id')
     @HttpCode(HttpStatus.OK)
     public async findById(@Param('id') id: string) {
         try {
@@ -30,7 +30,7 @@ export class AnimalController {
         }
     }
 
-    @Patch('update/:id')
+    @Patch(':id')
     @HttpCode(HttpStatus.OK)
     public async patchById(@Param('id') id: string, @Body() partialUpdate: Partial<Animal>) {
         try {
@@ -41,7 +41,7 @@ export class AnimalController {
         }
     }
 
-    @Delete('delete/:id')
+    @Delete(':id')
     @HttpCode(HttpStatus.NO_CONTENT)
     public async deleteById(@Param('id') id: string) {
         try {
