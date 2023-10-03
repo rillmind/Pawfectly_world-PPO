@@ -23,7 +23,7 @@ export class UserController {
     return this.userService.login(post_schema_login)
   }
 
-  @Get('list')
+  @Get()
   @Roles('adm')
   @UseGuards(AuthGuard(), RoleGuard)
   @HttpCode(HttpStatus.OK)
@@ -31,7 +31,7 @@ export class UserController {
     return this.userService.findAll()
   }
 
-  @Get('find/:id')
+  @Get(':id')
   public async findById(@Param('id') id: string) {
     try {
       const document = await this.userService.findById(id)
@@ -41,7 +41,7 @@ export class UserController {
     }
   }
 
-  @Patch('update/:id')
+  @Patch(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   public async patchById(@Param('id') id: string, @Body() partialUpdate: Partial<User>) {
     try {
@@ -52,7 +52,7 @@ export class UserController {
     }
   }
 
-  @Delete('delete/:id')
+  @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   public async deleteById(@Param('id') id: string) {
     try {
