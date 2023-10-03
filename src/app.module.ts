@@ -8,7 +8,7 @@ import { AdocaoModule } from './adocao/adocao.module';
 @Module({
   imports: [
     ConfigModule.forRoot({ envFilePath: '.env', isGlobal: true }),
-    MongooseModule.forRoot(process.env.MONGO_URI),
+    MongooseModule.forRoot(process.env.MONGO_URI_ATLAS),
     UserModule,
     AnimalModule,
     AdocaoModule,
