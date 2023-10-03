@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpStatus, HttpCode, Post, UseGuards, NotFoundException, Param, Delete, Patch } from '@nestjs/common';
+import { Body, Controller, Get, HttpStatus, HttpCode, Post, UseGuards, NotFoundException, Param, Delete, Patch, Res } from '@nestjs/common';
 import { UserService } from './user.service';
 import { Post_schema_user } from './DTOs/user.dto';
 import { Post_schema_login } from './DTOs/login.dto';
@@ -6,6 +6,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { RoleGuard } from './roles/role.guard';
 import { User } from './schemas/user.schemas';
 import { Roles } from './roles/roles.decorator';
+import { Response } from 'express';
 
 @Controller('user')
 export class UserController {
@@ -19,8 +20,11 @@ export class UserController {
 
   @Post('/login')
   @HttpCode(HttpStatus.OK)
-  public async login(@Body() post_schema_login: Post_schema_login): Promise<{ token: string }> {
-    return this.userService.login(post_schema_login)
+  public async login(@Body() post_schema_login: Post_schema_login, @Res({ passthrough: true }) res: Response): Promise<{ id: any, nome: string, email_ou_username: string  }> {
+    const authResult = await this.userService.login(post_schema_login);
+    res.set('Authorization', authResult.token);
+    const { token, ...body } = authResult;
+    return body;
   }
 
   @Get()

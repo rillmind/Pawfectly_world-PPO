@@ -29,7 +29,7 @@ export class UserService {
     return { id: user._id, nome, username, email, token, role }
   }
 
-  public async login(post_schema_login: Post_schema_login): Promise<{ token: string, email_ou_username: string, id: any }> {
+  public async login(post_schema_login: Post_schema_login): Promise<{ token: string, email_ou_username: string, id: any, nome: string }> {
     const { email_ou_username, senha } = post_schema_login
     if (!email_ou_username || !senha) { throw new UnprocessableEntityException('Todos os campos precisam ser preenchidos!') }
     const user = await this.userModel.findOne({ $or: [{ email: email_ou_username }, { username: email_ou_username }] })
@@ -37,7 +37,7 @@ export class UserService {
     const isPasswordMatched = await bcrypt.compare(senha, user.senha)
     if (!isPasswordMatched) { throw new UnauthorizedException('Email, username ou senha inválidos') }
     const token = this.jwtService.sign({ id: user._id })
-    return { id: user._id, email_ou_username, token }
+    return { id: user._id, nome: user.nome, email_ou_username, token }
   }
 
   public async findAll(): Promise<User[]> {
