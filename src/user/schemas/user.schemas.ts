@@ -17,6 +17,9 @@ export class User extends Document {
   @Prop({ required: true })
   senha: string
 
+  @Prop({ required: true })
+  role: string
+
   @Prop()
   cpf_ou_cnpj: string
 
@@ -35,6 +38,7 @@ export class User extends Document {
     rua: string;
     numero: string;
   }
+    static _id: any;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User)

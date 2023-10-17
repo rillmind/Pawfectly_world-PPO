@@ -1,4 +1,5 @@
-import { IsEmail, IsNotEmpty, IsString, Min, MinLength, minLength } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsString, MinLength } from 'class-validator';
+import { Role } from '../roles/roles.enum';
 
 export class Post_schema_user {
   @IsNotEmpty()
@@ -17,4 +18,8 @@ export class Post_schema_user {
   @IsString()
   @MinLength(6)
   readonly senha: string
+
+  @IsNotEmpty()
+  @IsString()
+  readonly role: Role
 }

@@ -1,13 +1,16 @@
-import { Body, Controller, Get, HttpStatus, HttpCode, Post, UseGuards, NotFoundException, Param, Delete, Patch } from '@nestjs/common';
+import { Body, Controller, Get, HttpStatus, HttpCode, Post, UseGuards, NotFoundException, Param, Delete, Patch, Res } from '@nestjs/common';
 import { UserService } from './user.service';
-import { Post_schema_login } from './DTOs/login.dto';
 import { Post_schema_user } from './DTOs/user.dto';
-import { User } from './schemas/user.schemas';
+import { Post_schema_login } from './DTOs/login.dto';
 import { AuthGuard } from '@nestjs/passport';
+import { RoleGuard } from './roles/role.guard';
+import { User } from './schemas/user.schemas';
+import { Roles } from './roles/roles.decorator';
+import { Response } from 'express';
 
 @Controller('user')
 export class UserController {
-  constructor(private userService: UserService) {}
+  constructor(private userService: UserService) { }
 
   @Post('/signup')
   @HttpCode(HttpStatus.CREATED)
@@ -17,12 +20,16 @@ export class UserController {
 
   @Post('/login')
   @HttpCode(HttpStatus.OK)
-  public async login(@Body() post_schema_login: Post_schema_login): Promise<{ token: string }> {
-    return this.userService.login(post_schema_login)
+  public async login(@Body() post_schema_login: Post_schema_login, @Res({ passthrough: true }) res: Response): Promise<{ id: any, nome: string, email_ou_username: string  }> {
+    const authResult = await this.userService.login(post_schema_login);
+    res.set('Authorization', authResult.token);
+    const { token, ...body } = authResult;
+    return body;
   }
 
   @Get()
-  @UseGuards(AuthGuard())
+  @Roles('adm')
+  @UseGuards(AuthGuard(), RoleGuard)
   @HttpCode(HttpStatus.OK)
   public async findAll(): Promise<User[]> {
     return this.userService.findAll()
@@ -38,16 +45,8 @@ export class UserController {
     }
   }
 
-  @Delete(':id')
-  public async deleteById(@Param('id') id: string) {
-    try {
-      const deletedDocument = await this.userService.deleteById(id)
-      return deletedDocument
-    } 
-    catch (error) { throw new NotFoundException(error.message) }
-  }
-
   @Patch(':id')
+  @HttpCode(HttpStatus.NO_CONTENT)
   public async patchById(@Param('id') id: string, @Body() partialUpdate: Partial<User>) {
     try {
       const updatedDocument = await this.userService.patchById(id, partialUpdate)
@@ -55,5 +54,15 @@ export class UserController {
     } catch (error) {
       throw new NotFoundException(error.message)
     }
+  }
+
+  @Delete(':id')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  public async deleteById(@Param('id') id: string) {
+    try {
+      const deletedDocument = await this.userService.deleteById(id)
+      return deletedDocument
+    }
+    catch (error) { throw new NotFoundException(error.message) }
   }
 }

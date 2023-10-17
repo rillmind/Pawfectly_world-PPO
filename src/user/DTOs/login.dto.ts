@@ -6,9 +6,6 @@ export class Post_schema_login {
     @IsString()
     readonly email_ou_username: string
     
-    @IsString()
-    readonly username: string
-
     @IsNotEmpty()
     @IsString()
     @MinLength(6)
