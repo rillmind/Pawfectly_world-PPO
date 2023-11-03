@@ -12,7 +12,7 @@ import { Response } from 'express';
 export class UserController {
   constructor(private userService: UserService) { }
 
-  @Post('/signup')
+  @Post()
   @HttpCode(HttpStatus.CREATED)
   public async signUp(@Body() post_schema_user: Post_schema_user): Promise<{ token: string }> {
     return this.userService.signUp(post_schema_user)
