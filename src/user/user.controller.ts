@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpStatus, HttpCode, Post, UseGuards, NotFoundException, Param, Delete, Patch, Res } from '@nestjs/common';
+import { Body, Controller, Get, HttpStatus, HttpCode, Post, UseGuards, NotFoundException, Param, Delete, Patch, Res, Header } from '@nestjs/common';
 import { UserService } from './user.service';
 import { Post_schema_user } from './DTOs/user.dto';
 import { Post_schema_login } from './DTOs/login.dto';
@@ -13,6 +13,7 @@ export class UserController {
   constructor(private userService: UserService) { }
 
   @Post()
+  @Header('Access-Control-Expose-Headers', 'Authorization')
   @HttpCode(HttpStatus.CREATED)
   public async signUp(@Body() post_schema_user: Post_schema_user): Promise<{ token: string }> {
     return this.userService.signUp(post_schema_user)
