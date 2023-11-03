@@ -13,7 +13,7 @@ export class UserController {
   constructor(private userService: UserService) { }
 
   @Post()
-  @Header('Access-Control-Expose-Headers', 'Authorization')
+  @Header('Access-Control-Allow-Origin', '*')
   @HttpCode(HttpStatus.CREATED)
   public async signUp(@Body() post_schema_user: Post_schema_user): Promise<{ token: string }> {
     return this.userService.signUp(post_schema_user)
