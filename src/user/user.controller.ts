@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpStatus, HttpCode, Post, UseGuards, NotFoundException, Param, Delete, Patch, Res } from '@nestjs/common';
+import { Body, Controller, Get, HttpStatus, HttpCode, Post, UseGuards, NotFoundException, Param, Delete, Patch, Res, Header } from '@nestjs/common';
 import { UserService } from './user.service';
 import { Post_schema_user } from './dto/user.dto';
 import { Post_schema_login } from '../auth/dto/login.dto';
@@ -12,7 +12,8 @@ import { Response } from 'express';
 export class UserController {
   constructor(private userService: UserService) { }
 
-  @Post('/signup')
+  @Post()
+  @Header('Access-Control-Allow-Origin', '*')
   @HttpCode(HttpStatus.CREATED)
   public async signUp(@Body() post_schema_user: Post_schema_user): Promise<{ token: string }> {
     return this.userService.signUp(post_schema_user)
