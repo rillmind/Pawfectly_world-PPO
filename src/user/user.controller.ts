@@ -1,7 +1,7 @@
 import { Body, Controller, Get, HttpStatus, HttpCode, Post, UseGuards, NotFoundException, Param, Delete, Patch, Res } from '@nestjs/common';
 import { UserService } from './user.service';
-import { Post_schema_user } from './DTOs/user.dto';
-import { Post_schema_login } from './DTOs/login.dto';
+import { Post_schema_user } from './dto/user.dto';
+import { Post_schema_login } from '../auth/dto/login.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { RoleGuard } from './roles/role.guard';
 import { User } from './schemas/user.schemas';
