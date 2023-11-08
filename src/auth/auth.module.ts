@@ -1,12 +1,16 @@
-import { Module } from "@nestjs/common";
-import { AuthService } from "./auth.service";
-import { UserModule } from "src/user/user.module";
-import { PassportModule } from "@nestjs/passport";
+import { Global, Module } from "@nestjs/common";
 import { JwtModule } from "@nestjs/jwt";
-import { ConfigService } from "@nestjs/config";
-import { MongooseModule } from "@nestjs/mongoose";
 import { UserSchema } from "src/user/schemas/user.schemas";
+import { UserModule } from "src/user/user.module";
+import { AuthService } from "./auth.service";
+import { ConfigService } from "@nestjs/config";
+import { PassportModule } from "@nestjs/passport";
+import { MongooseModule } from "@nestjs/mongoose";
+import { LocalStrategy } from "./strategy/local.strategy";
+import { JwtStrategy } from "./strategy/jwt.strategy";
+import { UserService } from "src/user/user.service";
 
+@Global()
 @Module({
   imports: [
     UserModule,
@@ -24,6 +28,7 @@ import { UserSchema } from "src/user/schemas/user.schemas";
     }),
     MongooseModule.forFeature([{ name: "User", schema: UserSchema }]),
   ],
-  providers: [AuthService],
+  providers: [AuthService, LocalStrategy, JwtStrategy, UserService],
+  exports: [AuthService, AuthModule, LocalStrategy, JwtStrategy, UserService],
 })
 export class AuthModule {}

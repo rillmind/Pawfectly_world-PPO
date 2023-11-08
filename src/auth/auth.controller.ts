@@ -1,4 +1,44 @@
-import { Controller } from '@nestjs/common';
+import {
+  Req,
+  Res,
+  Body,
+  Post,
+  HttpCode,
+  Controller,
+  HttpStatus,
+} from "@nestjs/common";
+import { Public } from "./decorator/public.auth.decorator";
+import { Response } from "express";
+import { AuthService } from "./auth.service";
+import { Post_schema_login } from "./dto/login.dto";
+import { JwtAuth } from "./decorator/jwt.auth.decorator";
 
-@Controller('auth')
-export class AuthController {}
+@Controller("auth")
+@JwtAuth()
+export class AuthController {
+  constructor(
+    private authService: AuthService,
+  ) {}
+
+  @Post()
+  @Public()
+  @HttpCode(HttpStatus.OK)
+  public async loginj(
+    @Body() post_schema_login: Post_schema_login,
+    @Res({ passthrough: true }) res: Response
+  ): Promise<{ id: any; nome: string; email_ou_username: string }> {
+    const authResult = await this.authService.login(post_schema_login);
+    res.set("Authorization", authResult.token);
+    const { token, ...body } = authResult;
+    return body;
+  }
+
+  // @Public()
+  // @Post()
+  // async login(@Req() req, @Res({ passthrough: true }) res: Response) {
+  //   console.log(req.user)
+  //   const login = await this.authService.generateToken(req.user);
+  //   res.set("Authorization", login.token);
+  //   return req.user;
+  // }
+}
