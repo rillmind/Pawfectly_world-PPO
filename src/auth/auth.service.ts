@@ -9,7 +9,6 @@ import { JwtService } from "@nestjs/jwt";
 import { InjectModel } from "@nestjs/mongoose";
 import { Post_schema_login } from "./dto/login.dto";
 import * as bcrypt from "bcrypt";
-import { Role } from "./enum/roles.enum";
 
 @Injectable()
 export class AuthService {

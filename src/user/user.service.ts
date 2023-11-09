@@ -18,7 +18,6 @@ import * as bcrypt from "bcryptjs";
 
 @Injectable()
 export class UserService {
-  jwtService: any;
   constructor(
     @InjectModel("User")
     private userModel: Model<User>,
@@ -84,6 +83,13 @@ export class UserService {
     }
   }
 
+  async findByIndex(index: number): Promise<User | null> {
+    return this.userModel
+      .findOne()
+      .skip(index - 1)
+      .exec();
+  }
+
   public async patchById(
     id: string,
     partialUpdate: Partial<User>
@@ -104,6 +110,18 @@ export class UserService {
     }
     const deletedDocument = await this.userModel.findByIdAndRemove(id).exec();
     return deletedDocument;
+  }
+
+  async deleteByIndex(index: number): Promise<User | null> {
+    const user = await this.userModel
+      .findOne()
+      .skip(index - 1)
+      .exec();
+    if (!user) {
+      return null;
+    }
+    await user.deleteOne();
+    return user;
   }
 
   private static jwtExtractor(request: Request): string {
