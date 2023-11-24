@@ -10,7 +10,6 @@ import { User } from "./schemas/user.schemas";
 import { Role } from "src/auth/enum/roles.enum";
 import { Model } from "mongoose";
 import { Request } from "express";
-import { JwtPayload } from "./jwt/jwt-payload.model";
 import { InjectModel } from "@nestjs/mongoose";
 import { AuthService } from "src/auth/auth.service";
 import { Post_schema_user } from "./dto/user.dto";
@@ -137,11 +136,5 @@ export class UserService {
     return UserService.jwtExtractor;
   }
 
-  public async validateUser(jwtPayload: JwtPayload): Promise<User> {
-    const user = await this.userModel.findOne({ _id: jwtPayload.userId });
-    if (!user) {
-      throw new UnauthorizedException("User not found.");
-    }
-    return user;
-  }
+ 
 }

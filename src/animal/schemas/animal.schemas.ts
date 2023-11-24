@@ -1,31 +1,32 @@
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from "mongoose";
+import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
+import mongoose, { Document } from "mongoose";
+import { User } from "src/user/schemas/user.schemas";
 
 @Schema({ timestamps: true })
 export class Animal extends Document {
-    @Prop({ required: true })
-    dono: string
+  @Prop()
+  nome: string;
 
-    @Prop({ required: true })
-    nome: string
+  @Prop()
+  idade: string;
 
-    @Prop({ required: true })
-    idade: string
+  @Prop()
+  tipo: string;
 
-    @Prop({ required: true })
-    tipo: string
+  @Prop()
+  raca: string;
 
-    @Prop({ required: true })
-    raca: string
+  @Prop()
+  sexo: string;
 
-    @Prop({ required: true })
-    sexo: string
+  @Prop()
+  descricao: string;
 
-    @Prop()
-    descricao: string
+  @Prop()
+  adocao: boolean;
 
-    @Prop({ required: true })
-    adocao: boolean
+  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: "User" })
+  dono: User;
 }
 
-export const AnimalSchema = SchemaFactory.createForClass(Animal)
+export const AnimalSchema = SchemaFactory.createForClass(Animal);

@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   HttpCode,
+  UseGuards,
   Controller,
   HttpStatus,
   NotFoundException,
@@ -15,14 +16,16 @@ import {
 import { User } from "./schemas/user.schemas";
 import { Role } from "src/auth/enum/roles.enum";
 import { Roles } from "src/auth/decorator/roles.decorator";
+import { Types } from "mongoose";
 import { Public } from "src/auth/decorator/public.auth.decorator";
 import { JwtAuth } from "src/auth/decorator/jwt.auth.decorator";
 import { Response } from "express";
+import { AuthGuard } from "@nestjs/passport";
+import { RolesGuard } from "src/auth/guard/roles.guard";
 import { UserService } from "./user.service";
 import { OwnerChecker } from "src/auth/decorator/ownership.checker.decorator";
 import { Post_schema_user } from "./dto/user.dto";
 import { UserOwnershipChecker } from "./owner/user.ownershup.checker";
-import { Types } from "mongoose";
 
 @Controller("user")
 @JwtAuth()

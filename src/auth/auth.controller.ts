@@ -5,6 +5,8 @@ import {
   HttpCode,
   Controller,
   HttpStatus,
+  Req,
+  Get,
 } from "@nestjs/common";
 import { Public } from "./decorator/public.auth.decorator";
 import { JwtAuth } from "./decorator/jwt.auth.decorator";
@@ -26,8 +28,14 @@ export class AuthController {
   ): Promise<{ id: any; nome: string; email_ou_username: string }> {
     const authResult = await this.authService.login(post_schema_login);
     res.set("Authorization", authResult.token);
+    res.set("Access-Control-Expose_headers", "Authorization");
     const { token, ...body } = authResult;
     return body;
+  }
+
+  @Get()
+  getProfile(@Req() req) {
+    return req.user;
   }
 
   // @Public()
