@@ -57,6 +57,7 @@ export class UserService {
     }
     const { token } = this.authService.generateToken({
       id: user._id,
+      username: user.username,
       name: user.nome,
       role: user.role,
     });
