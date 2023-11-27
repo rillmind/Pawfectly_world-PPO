@@ -37,13 +37,4 @@ export class AuthController {
   getProfile(@Req() req) {
     return req.user;
   }
-
-  // @Public()
-  // @Post()
-  // async login(@Req() req, @Res({ passthrough: true }) res: Response) {
-  //   console.log(req.user)
-  //   const login = await this.authService.generateToken(req.user);
-  //   res.set("Authorization", login.token);
-  //   return req.user;
-  // }
 }

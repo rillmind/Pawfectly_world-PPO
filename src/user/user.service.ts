@@ -2,14 +2,11 @@ import {
   Injectable,
   ConflictException,
   NotFoundException,
-  BadRequestException,
-  UnauthorizedException,
   UnprocessableEntityException,
 } from "@nestjs/common";
 import { User } from "./schemas/user.schemas";
 import { Role } from "src/auth/enum/roles.enum";
 import { Model } from "mongoose";
-import { Request } from "express";
 import { InjectModel } from "@nestjs/mongoose";
 import { AuthService } from "src/auth/auth.service";
 import { Post_schema_user } from "./dto/user.dto";
@@ -122,19 +119,4 @@ export class UserService {
     await user.deleteOne();
     return user;
   }
-
-  private static jwtExtractor(request: Request): string {
-    const authHeader = request.headers.authorization;
-    if (!authHeader) {
-      throw new BadRequestException("Token inválido ou inexistente!");
-    }
-    const [, token] = authHeader.split(" ");
-    return token;
-  }
-
-  public returnJwtExtractor(): (request: Request) => string {
-    return UserService.jwtExtractor;
-  }
-
- 
 }

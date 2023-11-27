@@ -7,7 +7,6 @@ import {
   Param,
   Delete,
   HttpCode,
-  UseGuards,
   Controller,
   HttpStatus,
   NotFoundException,
@@ -20,8 +19,6 @@ import { Types } from "mongoose";
 import { Public } from "src/auth/decorator/public.auth.decorator";
 import { JwtAuth } from "src/auth/decorator/jwt.auth.decorator";
 import { Response } from "express";
-import { AuthGuard } from "@nestjs/passport";
-import { RolesGuard } from "src/auth/guard/roles.guard";
 import { UserService } from "./user.service";
 import { OwnerChecker } from "src/auth/decorator/ownership.checker.decorator";
 import { Post_schema_user } from "./dto/user.dto";
@@ -92,6 +89,7 @@ export class UserController {
   // }
 
   @Patch(":id")
+  @Roles(Role.ADMIN, Role.OWNER)
   @HttpCode(HttpStatus.NO_CONTENT)
   public async patchById(
     @Param("id") id: string,
@@ -117,7 +115,6 @@ export class UserController {
       if (!deletedDocument) {
         throw new NotFoundException(`User not found.`);
       }
-      return deletedDocument;
     } else {
       const index = parseInt(param, 10);
       if (isNaN(index) || index < 1) {
@@ -127,7 +124,6 @@ export class UserController {
       if (!deletedDocument) {
         throw new NotFoundException(`User not found.`);
       }
-      return deletedDocument;
     }
   }
 }

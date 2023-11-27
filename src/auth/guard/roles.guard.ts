@@ -6,8 +6,8 @@ import {
   ForbiddenException,
 } from "@nestjs/common";
 import {
-  NoOwnershitCheckerException,
   NoResourceToCheckException,
+  NoOwnershitCheckerException,
 } from "../exception/ownership.checker.exceptions";
 import { Role } from "../enum/roles.enum";
 import { ROLES_KEY } from "../decorator/roles.decorator";
@@ -31,7 +31,6 @@ export class RolesGuard implements CanActivate {
     const request = context.switchToHttp().getRequest();
     const user = request.user;
     const hasSomeRole = requiredRoles.some((role) => user.role === role);
-    console.log(hasSomeRole)
     if (!hasSomeRole && requiredRoles.includes(Role.OWNER)) {
       const resourceId = request.params?.id ? request.params?.id : null;
       if (!resourceId && request.method === "GET") {

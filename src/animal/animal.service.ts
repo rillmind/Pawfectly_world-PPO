@@ -1,8 +1,9 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
+import { Injectable, NotFoundException, Req } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
 import { Animal } from "./schemas/animal.schemas";
 import { Post_schema_animal } from "./DTOs/animal.dto";
+import { User } from "src/user/schemas/user.schemas";
 
 @Injectable()
 export class AnimalService {
@@ -13,20 +14,21 @@ export class AnimalService {
 
   public async createAnimal(
     post_schema_animal: Post_schema_animal
-  ): Promise<{ id: any; dono: any; nome: string; adocao: any }> {
-    const { dono, nome, idade, tipo, raca, sexo, descricao, adocao } =
+  ): Promise<{ id: any; nome: string; adocao: any; dono: User }> {
+    const { nome, idade, tipo, raca, sexo, descricao, adocao, dono } =
       post_schema_animal;
+    const userId = User._id;
     const animal = await this.animalModel.create({
-      dono,
       nome,
+      idade,
       tipo,
       raca,
       sexo,
-      idade,
-      adocao,
       descricao,
+      adocao,
+      dono: userId,
     });
-    return { id: animal._id, dono, nome, adocao };
+    return { id: animal._id, dono: User._id, nome, adocao };
   }
 
   public async findAll(): Promise<Animal[]> {
