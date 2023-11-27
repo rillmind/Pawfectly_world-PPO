@@ -1,23 +1,26 @@
-import { Injectable, NotFoundException, Req } from "@nestjs/common";
-import { InjectModel } from "@nestjs/mongoose";
+import { Injectable, NotFoundException } from "@nestjs/common";
+import { User } from "src/user/schemas/user.schemas";
 import { Model } from "mongoose";
 import { Animal } from "./schemas/animal.schemas";
+import { InjectModel } from "@nestjs/mongoose";
 import { Post_schema_animal } from "./DTOs/animal.dto";
-import { User } from "src/user/schemas/user.schemas";
 
 @Injectable()
 export class AnimalService {
   constructor(
     @InjectModel("Animal")
-    private animalModel: Model<Animal>
+    private animalModel: Model<Animal>,
+    @InjectModel("User")
+    private userModel: Model<User>
   ) {}
 
   public async createAnimal(
-    post_schema_animal: Post_schema_animal
+    post_schema_animal: Post_schema_animal,
+    userId: string
   ): Promise<{ id: any; nome: string; adocao: any; dono: User }> {
-    const { nome, idade, tipo, raca, sexo, descricao, adocao, dono } =
+    const { nome, idade, tipo, raca, sexo, descricao, adocao } =
       post_schema_animal;
-    const userId = User._id;
+    const user = await this.userModel.findById(userId);
     const animal = await this.animalModel.create({
       nome,
       idade,
@@ -26,7 +29,7 @@ export class AnimalService {
       sexo,
       descricao,
       adocao,
-      dono: userId,
+      dono: user,
     });
     return { id: animal._id, dono: User._id, nome, adocao };
   }
@@ -67,5 +70,17 @@ export class AnimalService {
     }
     const deletedDocument = await this.animalModel.findByIdAndRemove(id).exec();
     return deletedDocument;
+  }
+
+  async deleteByIndex(index: number): Promise<Animal | null> {
+    const animal = await this.animalModel
+      .findOne()
+      .skip(index - 1)
+      .exec();
+    if (!animal) {
+      return null;
+    }
+    await animal.deleteOne();
+    return animal;
   }
 }

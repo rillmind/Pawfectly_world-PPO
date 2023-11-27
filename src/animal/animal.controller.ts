@@ -10,9 +10,11 @@ import {
   Controller,
   HttpStatus,
   NotFoundException,
+  BadRequestException,
 } from "@nestjs/common";
 import { Role } from "src/auth/enum/roles.enum";
 import { Roles } from "src/auth/decorator/roles.decorator";
+import { Types } from "mongoose";
 import { Animal } from "./schemas/animal.schemas";
 import { JwtAuth } from "src/auth/decorator/jwt.auth.decorator";
 import { OwnerChecker } from "src/auth/decorator/ownership.checker.decorator";
@@ -35,7 +37,7 @@ export class AnimalController {
     @Req() req
   ): Promise<{ id: any; nome: string; adocao: any; dono: any }> {
     const userId = req.user.id;
-    const animal = await this.animalService.createAnimal(post_schema_animal);
+    const animal = await this.animalService.createAnimal(post_schema_animal, userId);
     return {
       id: animal.id,
       nome: animal.nome,
@@ -81,14 +83,23 @@ export class AnimalController {
   }
 
   @Delete(":id")
-  @Roles(Role.ADMIN)
+  @Roles(Role.ADMIN, Role.OWNER)
   @HttpCode(HttpStatus.NO_CONTENT)
-  public async deleteById(@Param("id") id: string) {
-    try {
-      const deletedDocument = await this.animalService.deleteById(id);
-      return deletedDocument;
-    } catch (error) {
-      throw new NotFoundException(error.message);
+  public async delete(@Param("id") param: string) {
+    if (Types.ObjectId.isValid(param)) {
+      const deletedDocument = await this.animalService.deleteById(param);
+      if (!deletedDocument) {
+        throw new NotFoundException(`Animal not found.`);
+      }
+    } else {
+      const index = parseInt(param, 10);
+      if (isNaN(index) || index < 1) {
+        throw new BadRequestException("Index inválido");
+      }
+      const deletedDocument = await this.animalService.deleteByIndex(index);
+      if (!deletedDocument) {
+        throw new NotFoundException(`Animal not found.`);
+      }
     }
   }
 }
