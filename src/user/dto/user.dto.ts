@@ -1,4 +1,4 @@
-import { IsEmail, IsNotEmpty, IsOptional, IsString, MinLength } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class Post_schema_user {
   @IsNotEmpty()
@@ -15,7 +15,6 @@ export class Post_schema_user {
 
   @IsNotEmpty()
   @IsString()
-  @MinLength(6)
   readonly senha: string
 }
 

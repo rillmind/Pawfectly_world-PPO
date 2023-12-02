@@ -3,8 +3,7 @@ import { ResourceOwnershipChecker } from "src/auth/interfaces/resource.ownership
 
 @Injectable()
 export class UserOwnershipChecker
-  implements ResourceOwnershipChecker<string, string>
-{
+  implements ResourceOwnershipChecker<string, string>{
   public checkOwnership(resourceId: string, userId: string): boolean {
     return resourceId == userId;
   }
