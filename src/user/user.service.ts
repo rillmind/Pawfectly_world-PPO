@@ -9,8 +9,9 @@ import { Role } from "src/auth/enum/roles.enum";
 import { Model } from "mongoose";
 import { InjectModel } from "@nestjs/mongoose";
 import { AuthService } from "src/auth/auth.service";
-import { Post_schema_user } from "./dto/user.dto";
+import { Post_schema_user } from "./dto/user.signup.dto";
 import * as bcrypt from "bcryptjs";
+import { Patch_schema_user } from "./dto/user.update.dto";
 
 @Injectable()
 export class UserService {
@@ -65,7 +66,7 @@ export class UserService {
   }
 
   public async findAll(): Promise<User[]> {
-    return this.userModel.find();
+    return this.userModel.find().sort({ createdAt: -1 }).limit(10).exec();
   }
 
   public async findById(id: string): Promise<User> {
@@ -89,13 +90,13 @@ export class UserService {
 
   public async patchById(
     id: string,
-    partialUpdate: Partial<User>
+    patch_schema_user: Patch_schema_user
   ): Promise<User> {
     const document = await this.findById(id);
     if (!document) {
       throw new NotFoundException(`Document com ID ${id} não encontrado!`);
     }
-    Object.assign(document, partialUpdate);
+    Object.assign(document, patch_schema_user);
     const updatedDocument = await document.save();
     return updatedDocument;
   }

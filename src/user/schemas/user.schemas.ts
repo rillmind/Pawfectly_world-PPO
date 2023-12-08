@@ -30,24 +30,24 @@ export class User extends Document {
   @Prop()
   data_de_nascimento: string;
 
-  @Prop({
-    type: {
-      cep: String,
-      estado: String,
-      cidade: String,
-      bairro: String,
-      rua: String,
-      numero: String,
-    },
-  })
-  endereco: {
-    cep: string;
-    estado: string;
-    cidade: string;
-    bairro: string;
-    rua: string;
-    numero: string;
-  };
+  @Prop()
+  cep: string;
+
+  @Prop()
+  estado: string;
+
+  @Prop()
+  cidade: string;
+
+  @Prop()
+  bairro: string;
+
+  @Prop()
+  rua: string;
+
+  @Prop()
+  numero: string;
+
   static _id: any;
 }
 

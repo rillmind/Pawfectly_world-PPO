@@ -21,8 +21,9 @@ import { JwtAuth } from "src/auth/decorator/jwt.auth.decorator";
 import { Response } from "express";
 import { UserService } from "./user.service";
 import { OwnerChecker } from "src/auth/decorator/ownership.checker.decorator";
-import { Post_schema_user } from "./dto/user.dto";
+import { Post_schema_user } from "./dto/user.signup.dto";
 import { UserOwnershipChecker } from "./owner/user.ownershup.checker";
+import { Patch_schema_user } from "./dto/user.update.dto";
 
 @Controller("user")
 @JwtAuth()
@@ -93,12 +94,12 @@ export class UserController {
   @HttpCode(HttpStatus.NO_CONTENT)
   public async patchById(
     @Param("id") id: string,
-    @Body() partialUpdate: Partial<User>
+    @Body() patch_schema_user: Patch_schema_user
   ) {
     try {
       const updatedDocument = await this.userService.patchById(
         id,
-        partialUpdate
+        patch_schema_user
       );
       return updatedDocument;
     } catch (error) {

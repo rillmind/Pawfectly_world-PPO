@@ -35,7 +35,7 @@ export class AnimalService {
   }
 
   public async findAll(): Promise<Animal[]> {
-    return this.animalModel.find();
+    return this.animalModel.find().sort({ createdAt: -1 }).limit(10).exec();
   }
 
   public async findById(id: string): Promise<Animal> {
