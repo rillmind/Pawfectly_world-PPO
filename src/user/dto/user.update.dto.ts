@@ -2,49 +2,50 @@ import { Type } from "class-transformer";
 import { IsEmail, IsString, IsOptional, IsNotEmpty } from "class-validator";
 
 export class Patch_schema_user {
-  @IsNotEmpty()
   @IsString()
+  @IsNotEmpty()
   readonly nome: string;
 
-  @IsNotEmpty()
   @IsString()
+  @IsNotEmpty()
   readonly username: string;
 
-  @IsNotEmpty()
   @IsEmail()
+  @IsNotEmpty()
   readonly email: string;
 
-  @IsNotEmpty()
   @IsString()
-  readonly senha: string;
-
   @IsOptional()
-  @IsString()
   readonly cpf_ou_cnpj?: string;
 
-  @IsOptional()
   @IsString()
+  @IsOptional()
   readonly telefone?: string;
 
-  @IsOptional()
   @IsString()
+  @IsOptional()
   readonly data_de_nascimento?: string;
 
+  @IsString()
   @IsOptional()
-  readonly cep: string;
+  readonly cep?: string;
+
+  @IsString()
+  @IsOptional()
+  readonly estado?: string;
+
+  @IsString()
+  @IsOptional()
+  readonly cidade?: string;
+
+  @IsString()
+  @IsOptional()
+  readonly bairro?: string;
+
+  @IsString()
+  @IsOptional()
+  readonly rua?: string;
 
   @IsOptional()
-  readonly estado: string;
-
-  @IsOptional()
-  readonly cidade: string;
-
-  @IsOptional()
-  readonly bairro: string;
-
-  @IsOptional()
-  readonly rua: string;
-
-  @IsOptional()
-  readonly numero: string;
+  readonly numero?: string;
 }

@@ -1,12 +1,12 @@
 import {
+  Req,
+  Get,
   Res,
   Body,
   Post,
   HttpCode,
   Controller,
   HttpStatus,
-  Req,
-  Get,
 } from "@nestjs/common";
 import { Public } from "./decorator/public.auth.decorator";
 import { JwtAuth } from "./decorator/jwt.auth.decorator";
@@ -34,7 +34,8 @@ export class AuthController {
   }
 
   @Get()
-  getProfile(@Req() req) {
-    return req.user;
+  public async getProfile(@Req() req) {
+    const profile = await this.authService.getById(req.user.id);
+    return profile;
   }
 }

@@ -44,12 +44,6 @@ export class UserController {
     return body;
   }
 
-  @Get("profile")
-  public async profile() {
-    const user = this.userService.findById("jwt");
-    return user;
-  }
-
   @Get()
   @Roles(Role.ADMIN)
   @HttpCode(HttpStatus.OK)
@@ -78,16 +72,6 @@ export class UserController {
       return user;
     }
   }
-
-  // @Get(":id")
-  // public async findById(@Param("id") id: string) {
-  //   try {
-  //     const document = await this.userService.findById(id);
-  //     return document;
-  //   } catch (error) {
-  //     throw new NotFoundException(error.message);
-  //   }
-  // }
 
   @Patch(":id")
   @Roles(Role.ADMIN, Role.OWNER)

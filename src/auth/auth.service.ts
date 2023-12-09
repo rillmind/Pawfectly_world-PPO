@@ -61,4 +61,9 @@ export class AuthService {
     });
     return { token };
   }
+
+  async getById(id: any) {
+    const document = await this.userModel.findById(id);
+    return document;
+  }
 }

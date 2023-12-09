@@ -5,6 +5,7 @@ import { ConfigModule } from "@nestjs/config";
 import { AnimalModule } from "./animal/animal.module";
 import { AdocaoModule } from "./adocao/adocao.module";
 import { MongooseModule } from "@nestjs/mongoose";
+import { PostModule } from './post/post.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { MongooseModule } from "@nestjs/mongoose";
     AdocaoModule,
     UserModule,
     AuthModule,
+    PostModule,
   ],
 })
 export class AppModule {}
