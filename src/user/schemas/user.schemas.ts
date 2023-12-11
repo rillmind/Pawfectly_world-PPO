@@ -26,6 +26,9 @@ export class User extends Document {
   pets: Animal;
 
   @Prop()
+  biografia: string;
+
+  @Prop()
   cpf_ou_cnpj: string;
 
   @Prop()

@@ -3,16 +3,16 @@ import { IsEmail, IsString, IsOptional, IsNotEmpty } from "class-validator";
 
 export class Patch_schema_user {
   @IsString()
-  @IsNotEmpty()
-  readonly nome: string;
+  @IsOptional()
+  readonly nome?: string;
 
   @IsString()
-  @IsNotEmpty()
-  readonly username: string;
+  @IsOptional()
+  readonly username?: string;
 
   @IsEmail()
-  @IsNotEmpty()
-  readonly email: string;
+  @IsOptional()
+  readonly email?: string;
 
   @IsString()
   @IsOptional()
@@ -25,6 +25,10 @@ export class Patch_schema_user {
   @IsString()
   @IsOptional()
   readonly data_de_nascimento?: string;
+
+  @IsString()
+  @IsOptional()
+  readonly biografia?: string;
 
   @IsString()
   @IsOptional()
