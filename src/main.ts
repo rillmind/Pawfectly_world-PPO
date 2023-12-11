@@ -7,6 +7,7 @@ async function bootstrap() {
     origin: true,
     methods: "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS",
     credentials: true,
+    allowedHeaders: '*'
   });
   await app.listen(2306);
 }

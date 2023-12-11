@@ -23,17 +23,17 @@ export class AnimalService {
     const user = await this.userModel.findById(userId);
     const animal = await this.animalModel.create({
       nome,
-      idade,
       tipo,
       raca,
       sexo,
-      descricao,
+      idade,
       adocao,
+      descricao,
       dono: user,
     });
-    const insert = await this.userModel.findByIdAndUpdate(userId, {
-      $push: { pets: { nome: animal.nome ,id: animal._id } }
-    })
+    await this.userModel.findByIdAndUpdate(userId, {
+      $push: { pets: { id: animal._id, nome: animal.nome } },
+    });
     return { id: animal._id, dono: User._id, nome, adocao };
   }
 
