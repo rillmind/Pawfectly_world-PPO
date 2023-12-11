@@ -11,6 +11,7 @@ import {
   HttpStatus,
   NotFoundException,
   BadRequestException,
+  Req,
 } from "@nestjs/common";
 import { User } from "./schemas/user.schemas";
 import { Role } from "src/auth/enum/roles.enum";
@@ -78,8 +79,10 @@ export class UserController {
   @HttpCode(HttpStatus.NO_CONTENT)
   public async patchById(
     @Param("id") id: string,
-    @Body() patch_schema_user: Patch_schema_user
+    @Body() patch_schema_user: Patch_schema_user,
+    @Req() req
   ) {
+    const userId = req.user.id
     try {
       const updatedDocument = await this.userService.patchById(
         id,

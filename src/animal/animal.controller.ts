@@ -37,7 +37,10 @@ export class AnimalController {
     @Req() req
   ): Promise<{ id: any; nome: string; adocao: any; dono: any }> {
     const userId = req.user.id;
-    const animal = await this.animalService.createAnimal(post_schema_animal, userId);
+    const animal = await this.animalService.createAnimal(
+      post_schema_animal,
+      userId
+    );
     return {
       id: animal.id,
       nome: animal.nome,
@@ -56,13 +59,11 @@ export class AnimalController {
   @Get(":id")
   @Roles(Role.ADMIN)
   @HttpCode(HttpStatus.OK)
-  public async findById(@Param("id") id: string) {
-    try {
-      const document = await this.animalService.findById(id);
-      return document;
-    } catch (error) {
-      throw new NotFoundException(error.message);
-    }
+  public async findById(
+    @Param("id") id: string
+  ): Promise<{ nome: string; id: any }> {
+    const document = await this.animalService.findById(id);
+    return { id: document.id, nome: document.nome };
   }
 
   @Patch(":id")

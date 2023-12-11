@@ -10,7 +10,7 @@ import { PostModule } from './post/post.module';
 @Module({
   imports: [
     ConfigModule.forRoot({ envFilePath: ".env", isGlobal: true }),
-    MongooseModule.forRoot(process.env.MONGO_URI),
+    MongooseModule.forRoot(process.env.ATLAS_URI),
     AnimalModule,
     AdocaoModule,
     UserModule,

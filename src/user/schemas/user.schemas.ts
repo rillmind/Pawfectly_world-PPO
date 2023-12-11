@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
-import { Document } from "mongoose";
+import mongoose, { Document } from "mongoose";
+import { Animal } from "src/animal/schemas/animal.schemas";
 import { Role } from "src/auth/enum/roles.enum";
 
 @Schema({ timestamps: true })
@@ -20,6 +21,9 @@ export class User extends Document {
 
   @Prop({ required: true })
   role: Role;
+
+  @Prop({ type: [], ref: "Animal" })
+  pets: Animal;
 
   @Prop()
   cpf_ou_cnpj: string;

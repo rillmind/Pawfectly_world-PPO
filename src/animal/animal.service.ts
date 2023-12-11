@@ -31,6 +31,9 @@ export class AnimalService {
       adocao,
       dono: user,
     });
+    const insert = await this.userModel.findByIdAndUpdate(userId, {
+      $push: { pets: { nome: animal.nome ,id: animal._id } }
+    })
     return { id: animal._id, dono: User._id, nome, adocao };
   }
 
