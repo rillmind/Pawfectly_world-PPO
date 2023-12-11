@@ -7,6 +7,7 @@ import {
   HttpCode,
   Controller,
   HttpStatus,
+  Header,
 } from "@nestjs/common";
 import { Public } from "./decorator/public.auth.decorator";
 import { JwtAuth } from "./decorator/jwt.auth.decorator";
@@ -22,6 +23,7 @@ export class AuthController {
   @Post()
   @Public()
   @HttpCode(HttpStatus.OK)
+  @Header("Access-Control-Expose-Headers", "Authorization")
   public async login(
     @Body() post_schema_login: Post_schema_login,
     @Res({ passthrough: true }) res: Response
