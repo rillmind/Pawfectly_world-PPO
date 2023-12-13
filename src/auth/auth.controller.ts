@@ -38,7 +38,7 @@ export class AuthController {
   }
 
   @Get()
-  @Roles(Role.OWNER)
+  @Roles(Role.USER, Role.ADMIN)
   @HttpCode(HttpStatus.OK)
   public async getProfile(@Req() req) {
     const profile = await this.authService.getById(req.user.id);
