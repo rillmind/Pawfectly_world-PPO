@@ -14,6 +14,8 @@ import { JwtAuth } from "./decorator/jwt.auth.decorator";
 import { Response } from "express";
 import { AuthService } from "./auth.service";
 import { Post_schema_login } from "./dto/login.dto";
+import { Roles } from "./decorator/roles.decorator";
+import { Role } from "./enum/roles.enum";
 
 @Controller("auth")
 @JwtAuth()
@@ -36,6 +38,8 @@ export class AuthController {
   }
 
   @Get()
+  @Roles(Role.OWNER)
+  @HttpCode(HttpStatus.OK)
   public async getProfile(@Req() req) {
     const profile = await this.authService.getById(req.user.id);
     return profile;
