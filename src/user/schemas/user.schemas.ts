@@ -1,6 +1,5 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
-import mongoose, { Document } from "mongoose";
-import { Animal } from "src/animal/schemas/animal.schemas";
+import { Document } from "mongoose";
 import { Role } from "src/auth/enum/roles.enum";
 
 @Schema({ timestamps: true })
@@ -22,8 +21,8 @@ export class User extends Document {
   @Prop({ required: true })
   role: Role;
 
-  @Prop({ type: [], ref: "Animal" })
-  pets: Animal;
+  @Prop()
+  foto_de_perfil: string;
 
   @Prop()
   biografia: string;

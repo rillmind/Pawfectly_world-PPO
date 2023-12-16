@@ -12,6 +12,7 @@ import {
   NotFoundException,
   BadRequestException,
   Req,
+  Header,
 } from "@nestjs/common";
 import { User } from "./schemas/user.schemas";
 import { Role } from "src/auth/enum/roles.enum";
@@ -35,6 +36,7 @@ export class UserController {
   @Post()
   @Public()
   @HttpCode(HttpStatus.CREATED)
+  @Header("Access-Control-Expose-Headers", "Authorization")
   public async create(
     @Body() post_schema_user: Post_schema_user,
     @Res({ passthrough: true }) res: Response
@@ -82,7 +84,7 @@ export class UserController {
     @Body() patch_schema_user: Patch_schema_user,
     @Req() req
   ) {
-    const userId = req.user.id
+    const userId = req.user.id;
     try {
       const updatedDocument = await this.userService.patchById(
         id,

@@ -31,15 +31,19 @@ export class AnimalService {
       descricao,
       dono: user,
     });
-    await this.userModel.findByIdAndUpdate(userId, {
-      $push: { pets: { id: animal._id, nome: animal.nome } },
-    });
     return { id: animal._id, dono: User._id, nome, adocao };
   }
 
   public async findAll(): Promise<Animal[]> {
     return this.animalModel.find().sort({ createdAt: -1 }).limit(10).exec();
   }
+
+  public async findAllByOwner(userId: string): Promise <Animal[]> {
+    const animals = await this.animalModel.find({
+      dono: userId
+    }).exec();
+    return animals;
+  } 
 
   public async findById(id: string): Promise<Animal> {
     try {

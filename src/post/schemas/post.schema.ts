@@ -14,8 +14,8 @@ export class Post extends Document {
   @Prop()
   descricao: string;
 
-  // @Prop()
-  // img: any;
+  @Prop()
+  img: string;
 
   @Prop()
   like: boolean;

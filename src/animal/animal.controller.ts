@@ -24,7 +24,6 @@ import { UserOwnershipChecker } from "src/user/owner/user.ownershup.checker";
 
 @Controller("animal")
 @JwtAuth()
-@Roles(Role.ADMIN)
 @OwnerChecker(UserOwnershipChecker)
 export class AnimalController {
   constructor(private animalService: AnimalService) {}
@@ -54,6 +53,13 @@ export class AnimalController {
   @HttpCode(HttpStatus.OK)
   public async findAll(): Promise<Animal[]> {
     return this.animalService.findAll();
+  }
+
+  @Get("mypets")
+  @Roles(Role.USER, Role.ADMIN)
+  public async findAllByOwner(@Req() req): Promise<Animal[]> {
+    const userId = req.user.id;
+    return this.animalService.findAllByOwner(userId);
   }
 
   @Get(":id")
