@@ -28,8 +28,7 @@ export class AdoptionController {
     );
     return adoption;
   }
-
-  @Patch(":id")
+ @Patch(":id")
   public async toAccept(@Param("id") adoptionId: string) {
     const petUpdated = await this.adoptionService.toAccept(adoptionId);
     return petUpdated;
