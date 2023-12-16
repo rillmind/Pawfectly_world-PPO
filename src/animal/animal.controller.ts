@@ -49,8 +49,8 @@ export class AnimalController {
   }
 
   @Get()
-  @Roles(Role.ADMIN)
   @HttpCode(HttpStatus.OK)
+  @Roles(Role.ADMIN, Role.USER)
   public async findAll(): Promise<Animal[]> {
     return this.animalService.findAll();
   }
