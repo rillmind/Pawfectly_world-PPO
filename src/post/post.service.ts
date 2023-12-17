@@ -1,18 +1,15 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
-import { Post } from "./schemas/post.schema";
 import { Model } from "mongoose";
-import { Post_schema_post } from "./dto/post.dto";
 import { User } from "src/user/schemas/user.schemas";
-import { Animal } from "src/animal/schemas/animal.schemas";
+import { Post_schema_post } from "./dto/post.dto";
+import { Post } from "./schemas/post.schema";
 
 @Injectable()
 export class PostService {
   constructor(
     @InjectModel("Post")
     private postModel: Model<Post>,
-    @InjectModel("Animal")
-    private animalModel: Model<Animal>,
     @InjectModel("User")
     private userModel: Model<User>
   ) {}
@@ -22,10 +19,12 @@ export class PostService {
   }
 
   public async createPost(post_schema_post: Post_schema_post, userId: string) {
-    const { descricao, img } = post_schema_post;
+    const { descricao, img, pet, like } = post_schema_post;
     const id = await this.userModel.findById(userId);
     const post = await this.postModel.create({
       img,
+      pet,
+      like,
       user: id,
       descricao,
     });
@@ -33,10 +32,15 @@ export class PostService {
     return post;
   }
 
-  public async deletePostById(userId: string, postId: string) {
-    const user = await this.userModel.findById(userId);
+  public async findById(id: string) {
+    const post = await this.postModel.findById(id).exec();
+    if (!post) throw new NotFoundException();
+    return post;
+  }
+
+  public async deletePostById(postId: string) {
     const post = await this.postModel.findById(postId);
-    if (!post || !user) throw new NotFoundException();
+    if (!post) throw new NotFoundException();
     await this.postModel.findByIdAndRemove(postId).exec();
   }
 }

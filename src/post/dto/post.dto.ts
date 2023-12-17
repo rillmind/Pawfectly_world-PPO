@@ -1,4 +1,4 @@
-import { IsOptional, IsString } from "class-validator";
+import { IsBoolean, IsOptional, IsString } from "class-validator";
 
 export class Post_schema_post {
   @IsString()
@@ -7,4 +7,12 @@ export class Post_schema_post {
 
   @IsOptional()
   readonly img?: any;
+
+  @IsString()
+  @IsOptional()
+  readonly pet: string;
+
+  @IsBoolean()
+  @IsOptional()
+  readonly like: string;
 }

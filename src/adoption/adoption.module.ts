@@ -11,11 +11,11 @@ import { AdoptionSchema } from "./schema/adoption.schema";
 
 @Module({
   imports: [
-    MongooseModule.forFeature([{ name: "Animal", schema: AnimalSchema }]),
     MongooseModule.forFeature([{ name: "User", schema: UserSchema }]),
+    MongooseModule.forFeature([{ name: "Animal", schema: AnimalSchema }]),
     MongooseModule.forFeature([{ name: "Adoption", schema: AdoptionSchema }]),
+    AnimalModule,
     UserModule,
-    AnimalModule
   ],
   providers: [AnimalService, AdoptionService],
   controllers: [AdoptionController],

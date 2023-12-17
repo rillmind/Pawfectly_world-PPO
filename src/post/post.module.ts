@@ -1,10 +1,10 @@
 import { Module } from "@nestjs/common";
-import { PostService } from "./post.service";
-import { PostController } from "./post.controller";
-import { PostSchema } from "./schemas/post.schema";
 import { MongooseModule } from "@nestjs/mongoose";
 import { AnimalSchema } from "src/animal/schemas/animal.schemas";
 import { UserSchema } from "src/user/schemas/user.schemas";
+import { PostController } from "./post.controller";
+import { PostService } from "./post.service";
+import { PostSchema } from "./schemas/post.schema";
 
 @Module({
   imports: [
