@@ -89,7 +89,7 @@ export class AnimalController {
   }
 
   @Delete(":id")
-  @Roles(Role.ADMIN, Role.OWNER)
+  @Roles(Role.ADMIN, Role.USER)
   @HttpCode(HttpStatus.NO_CONTENT)
   public async delete(@Param("id") param: string) {
     if (Types.ObjectId.isValid(param)) {

@@ -36,20 +36,23 @@ export class AdoptionService {
       adopter: adopterId,
     });
     if (!adoption) throw new UnprocessableEntityException("Erro de validação.");
-    return { id: adoption._id, pet, owner, adopter: adopterId, descricao };
+    return {
+      id: adoption._id,
+      pet: adoption.pet,
+      adopter: adopterId,
+      owner: adoption.owner,
+      descricao,
+    };
   }
 
   public async toAccept(adoptionId: string) {
     const adoption = await this.adoptionModel.findById(adoptionId);
     if (!adoption) throw new NotFoundException("Adoção não encontrada.");
-    const petUpdated = this.animalModel
-      .findByIdAndUpdate(
-        adoption.pet,
-        { dono: adoption.adopter },
-        { new: true }
-      )
-      .exec();
-    return petUpdated;
+    return this.animalModel.findByIdAndUpdate(
+      adoption.pet,
+      { dono: adoption.adopter },
+      { new: true }
+    );
   }
 
   public async toRefuse(adoptionId: string) {
