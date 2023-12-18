@@ -33,3 +33,34 @@ export class Post_schema_animal {
   @IsEmpty()
   readonly dono: User;
 }
+
+export class Patch_schema_animal {
+  @IsString()
+  @IsOptional()
+  readonly nome?: string;
+
+  @IsString()
+  @IsOptional()
+  readonly idade?: string;
+
+  @IsString()
+  @IsOptional()
+  readonly tipo?: string;
+
+  @IsString()
+  @IsOptional()
+  readonly raca?: string;
+
+  @IsString()
+  @IsOptional()
+  readonly sexo?: string;
+
+  @IsString()
+  @IsOptional()
+  readonly descricao?: string;
+
+  @IsString()
+  @IsOptional()
+  readonly adocao?: boolean;
+}
+

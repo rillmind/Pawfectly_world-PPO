@@ -56,6 +56,7 @@ export class AnimalController {
   }
 
   @Get("mypets")
+  @HttpCode(HttpStatus.OK)
   @Roles(Role.USER, Role.ADMIN)
   public async findAllByOwner(@Req() req): Promise<Animal[]> {
     const userId = req.user.id;
@@ -63,8 +64,8 @@ export class AnimalController {
   }
 
   @Get(":id")
-  @Roles(Role.ADMIN, Role.USER)
   @HttpCode(HttpStatus.OK)
+  @Roles(Role.ADMIN, Role.USER)
   public async findById(
     @Param("id") id: string
   ): Promise<{ nome: string; id: any }> {
@@ -74,6 +75,7 @@ export class AnimalController {
 
   @Patch(":id")
   @HttpCode(HttpStatus.OK)
+  @Roles(Role.ADMIN, Role.USER)
   public async patchById(
     @Param("id") id: string,
     @Body() partialUpdate: Partial<Animal>

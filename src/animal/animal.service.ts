@@ -3,7 +3,7 @@ import { User } from "src/user/schemas/user.schemas";
 import { Model } from "mongoose";
 import { Animal } from "./schemas/animal.schemas";
 import { InjectModel } from "@nestjs/mongoose";
-import { Post_schema_animal } from "./DTOs/animal.dto";
+import { Patch_schema_animal, Post_schema_animal } from "./DTOs/animal.dto";
 
 @Injectable()
 export class AnimalService {
@@ -59,13 +59,13 @@ export class AnimalService {
 
   public async patchById(
     id: string,
-    partialUpdate: Partial<Animal>
+    patch_schema_animal: Patch_schema_animal
   ): Promise<Animal> {
     const document = await this.findById(id);
     if (!document) {
       throw new NotFoundException(`Document com ID ${id} não encontrado!`);
     }
-    Object.assign(document, partialUpdate);
+    Object.assign(document, patch_schema_animal);
     const updatedDocument = await document.save();
     return updatedDocument;
   }
