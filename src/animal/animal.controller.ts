@@ -78,12 +78,12 @@ export class AnimalController {
   @Roles(Role.ADMIN, Role.USER)
   public async patchById(
     @Param("id") id: string,
-    @Body() partialUpdate: Partial<Animal>
+    @Body() patch_schema_animal: Post_schema_animal
   ) {
     try {
       const updatedDocument = await this.animalService.patchById(
         id,
-        partialUpdate
+        patch_schema_animal
       );
       return updatedDocument;
     } catch (error) {
