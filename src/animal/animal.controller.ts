@@ -63,7 +63,7 @@ export class AnimalController {
   }
 
   @Get(":id")
-  @Roles(Role.ADMIN)
+  @Roles(Role.ADMIN, Role.USER)
   @HttpCode(HttpStatus.OK)
   public async findById(
     @Param("id") id: string
