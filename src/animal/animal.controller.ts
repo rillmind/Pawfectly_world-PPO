@@ -19,7 +19,7 @@ import { Animal } from "./schemas/animal.schemas";
 import { JwtAuth } from "src/auth/decorator/jwt.auth.decorator";
 import { OwnerChecker } from "src/auth/decorator/ownership.checker.decorator";
 import { AnimalService } from "./animal.service";
-import { Post_schema_animal } from "./DTOs/animal.dto";
+import { Patch_schema_animal, Post_schema_animal } from "./DTOs/animal.dto";
 import { UserOwnershipChecker } from "src/user/owner/user.ownershup.checker";
 
 @Controller("animal")
@@ -78,7 +78,7 @@ export class AnimalController {
   @Roles(Role.ADMIN, Role.USER)
   public async patchById(
     @Param("id") id: string,
-    @Body() patch_schema_animal: Post_schema_animal
+    @Body() patch_schema_animal: Patch_schema_animal
   ) {
     try {
       const updatedDocument = await this.animalService.patchById(

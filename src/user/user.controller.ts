@@ -82,9 +82,7 @@ export class UserController {
   public async patchById(
     @Param("id") id: string,
     @Body() patch_schema_user: Patch_schema_user,
-    @Req() req
   ) {
-    const userId = req.user.id;
     try {
       const updatedDocument = await this.userService.patchById(
         id,
