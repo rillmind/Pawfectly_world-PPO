@@ -1,19 +1,24 @@
-import { Type } from "class-transformer";
-import { IsEmail, IsString, IsOptional, IsNotEmpty } from "class-validator";
+import { IsEmail, IsNotEmpty, IsOptional, IsString } from "class-validator";
 
-export class Patch_schema_user {
+export class Post_schema_user {
+  @IsNotEmpty()
   @IsString()
-  @IsOptional()
-  readonly nome?: string;
+  readonly nome: string;
 
+  @IsNotEmpty()
   @IsString()
-  @IsOptional()
-  readonly username?: string;
+  readonly username: string;
 
+  @IsNotEmpty()
   @IsEmail()
-  @IsOptional()
-  readonly email?: string;
+  readonly email: string;
 
+  @IsNotEmpty()
+  @IsString()
+  readonly senha: string;
+}
+
+export class Patch_schema_data_user {
   @IsString()
   @IsOptional()
   readonly cpf_ou_cnpj?: string;
@@ -52,4 +57,9 @@ export class Patch_schema_user {
 
   @IsOptional()
   readonly numero?: string;
+}
+
+export class UserQueryDto {
+  @IsOptional()
+  owner: any;
 }

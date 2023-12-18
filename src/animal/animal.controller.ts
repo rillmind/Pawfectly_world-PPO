@@ -19,7 +19,7 @@ import { Animal } from "./schemas/animal.schemas";
 import { JwtAuth } from "src/auth/decorator/jwt.auth.decorator";
 import { OwnerChecker } from "src/auth/decorator/ownership.checker.decorator";
 import { AnimalService } from "./animal.service";
-import { Patch_schema_animal, Post_schema_animal } from "./DTOs/animal.dto";
+import { Patch_schema_animal, Post_schema_animal } from "./dto/animal.dto";
 import { UserOwnershipChecker } from "src/user/owner/user.ownershup.checker";
 
 @Controller("animal")
@@ -37,14 +37,14 @@ export class AnimalController {
   ): Promise<{ id: any; nome: string; adocao: any; dono: any }> {
     const userId = req.user.id;
     const animal = await this.animalService.createAnimal(
-      post_schema_animal,
-      userId
+      userId,
+      post_schema_animal
     );
     return {
       id: animal.id,
       nome: animal.nome,
-      adocao: animal.adocao,
       dono: userId,
+      adocao: animal.adocao,
     };
   }
 
@@ -69,8 +69,8 @@ export class AnimalController {
   public async findById(
     @Param("id") id: string
   ): Promise<{ nome: string; id: any }> {
-    const document = await this.animalService.findById(id);
-    return { id: document.id, nome: document.nome };
+    const animal = await this.animalService.findById(id);
+    return { id: animal.id, nome: animal.nome };
   }
 
   @Patch(":id")
@@ -80,15 +80,12 @@ export class AnimalController {
     @Param("id") id: string,
     @Body() patch_schema_animal: Patch_schema_animal
   ) {
-    try {
-      const updatedDocument = await this.animalService.patchById(
-        id,
-        patch_schema_animal
-      );
-      return updatedDocument;
-    } catch (error) {
-      throw new NotFoundException(error.message);
-    }
+    const updatedAnimal = await this.animalService.patchById(
+      id,
+      patch_schema_animal
+    );
+    if (!updatedAnimal) throw new NotFoundException("Pet não encontrado");
+    return updatedAnimal;
   }
 
   @Delete(":id")
@@ -96,19 +93,15 @@ export class AnimalController {
   @HttpCode(HttpStatus.NO_CONTENT)
   public async delete(@Param("id") param: string) {
     if (Types.ObjectId.isValid(param)) {
-      const deletedDocument = await this.animalService.deleteById(param);
-      if (!deletedDocument) {
-        throw new NotFoundException(`Animal not found.`);
-      }
+      const deletedAnimal = await this.animalService.deleteById(param);
+      if (!deletedAnimal) throw new NotFoundException("Pet não encontrado");
     } else {
       const index = parseInt(param, 10);
       if (isNaN(index) || index < 1) {
         throw new BadRequestException("Index inválido");
       }
-      const deletedDocument = await this.animalService.deleteByIndex(index);
-      if (!deletedDocument) {
-        throw new NotFoundException(`Animal not found.`);
-      }
+      const deletedAnimal = await this.animalService.deleteByIndex(index);
+      if (!deletedAnimal) throw new NotFoundException("Pet não encontrado");
     }
   }
 }

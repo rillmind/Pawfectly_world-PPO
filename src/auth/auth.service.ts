@@ -34,11 +34,11 @@ export class AuthService {
       $or: [{ email: email_ou_username }, { username: email_ou_username }],
     });
     if (!user) {
-      throw new UnauthorizedException("Email, username ou senha inválidos");
+      throw new UnauthorizedException("Email ou username inválidos");
     }
     const isPasswordMatched = await bcrypt.compare(senha, user.senha);
     if (!isPasswordMatched) {
-      throw new UnauthorizedException("Email, username ou senha inválidos");
+      throw new UnauthorizedException("Senha inválida");
     }
     const { token } = this.generateToken({
       id: user._id,
@@ -50,9 +50,7 @@ export class AuthService {
   }
 
   generateToken(user: any) {
-    if (!user) {
-      throw new Error("User is undefined");
-    }
+    if (!user) throw new Error("User is not defined");
     const token = this.jwtService.sign({
       sub: user.id,
       username: user.username,

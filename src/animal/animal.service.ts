@@ -1,9 +1,9 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
-import { User } from "src/user/schemas/user.schemas";
-import { Model } from "mongoose";
-import { Animal } from "./schemas/animal.schemas";
 import { InjectModel } from "@nestjs/mongoose";
-import { Patch_schema_animal, Post_schema_animal } from "./DTOs/animal.dto";
+import { Model } from "mongoose";
+import { User } from "src/user/schemas/user.schemas";
+import { Patch_schema_animal, Post_schema_animal } from "./dto/animal.dto";
+import { Animal } from "./schemas/animal.schemas";
 
 @Injectable()
 export class AnimalService {
@@ -15,8 +15,8 @@ export class AnimalService {
   ) {}
 
   public async createAnimal(
-    post_schema_animal: Post_schema_animal,
-    userId: string
+    userId: string,
+    post_schema_animal: Post_schema_animal
   ): Promise<{ id: any; nome: string; adocao: any; dono: User }> {
     const { nome, idade, tipo, raca, sexo, descricao, adocao } =
       post_schema_animal;
@@ -35,58 +35,43 @@ export class AnimalService {
   }
 
   public async findAll(): Promise<Animal[]> {
-    return this.animalModel.find().sort({ createdAt: -1 }).limit(10).exec();
+    return this.animalModel.find();
   }
 
-  public async findAllByOwner(userId: string): Promise <Animal[]> {
-    const animals = await this.animalModel.find({
-      dono: userId
-    }).exec();
-    return animals;
-  } 
+  public async findAllByOwner(userId: string): Promise<Animal[]> {
+    return await this.animalModel.find({
+      dono: userId,
+    });
+  }
 
   public async findById(id: string): Promise<Animal> {
-    try {
-      const document = await this.animalModel.findById(id).exec();
-      if (!document) {
-        throw new NotFoundException(`Document com ID ${id} não encontrado!`);
-      }
-      return document;
-    } catch (error) {
-      throw new NotFoundException(`Document com ID ${id} não encontrado!`);
-    }
+    const animal = await this.animalModel.findById(id).exec();
+    if (!animal) throw new NotFoundException("Pet não encontrado");
+    return animal;
   }
 
   public async patchById(
     id: string,
     patch_schema_animal: Patch_schema_animal
   ): Promise<Animal> {
-    const document = await this.findById(id);
-    if (!document) {
-      throw new NotFoundException(`Document com ID ${id} não encontrado!`);
-    }
-    Object.assign(document, patch_schema_animal);
-    const updatedDocument = await document.save();
-    return updatedDocument;
+    const animal = await this.findById(id);
+    if (!animal) throw new NotFoundException("Pet não encontrado");
+    Object.assign(animal, patch_schema_animal);
+    return await animal.save();
   }
 
   public async deleteById(id: string): Promise<Animal> {
-    const document = await this.findById(id);
-    if (!document) {
-      throw new NotFoundException(`Document com ID ${id} não encontrado!`);
-    }
-    const deletedDocument = await this.animalModel.findByIdAndRemove(id).exec();
-    return deletedDocument;
+    const animal = await this.findById(id);
+    if (!animal) throw new NotFoundException("Pet não encontrado");
+    return await this.animalModel.findByIdAndRemove(id).exec();
   }
 
-  async deleteByIndex(index: number): Promise<Animal | null> {
+  async deleteByIndex(index: number) {
     const animal = await this.animalModel
       .findOne()
       .skip(index - 1)
       .exec();
-    if (!animal) {
-      return null;
-    }
+    if (!animal) throw new NotFoundException("Pet não encontrado");
     await animal.deleteOne();
     return animal;
   }

@@ -16,6 +16,7 @@ import { Role } from "src/auth/enum/roles.enum";
 import { UserOwnershipChecker } from "src/user/owner/user.ownershup.checker";
 import { Post_schema_post } from "./dto/post.dto";
 import { PostService } from "./post.service";
+import { Posts } from "./schemas/post.schema";
 
 @Controller("post")
 @JwtAuth()
@@ -35,15 +36,22 @@ export class PostController {
   @HttpCode(HttpStatus.CREATED)
   public async signUp(@Body() post_schema_post: Post_schema_post, @Req() req) {
     const userId = req.user.id;
-    const post = await this.postService.createPost(post_schema_post, userId);
-    return post;
+    return await this.postService.createPost(post_schema_post, userId);
   }
-  
+
+  @Get("myposts")
+  @HttpCode(HttpStatus.OK)
+  @Roles(Role.USER, Role.ADMIN)
+  public async findAllByOwner(@Req() req): Promise<Posts[]> {
+    const userId = req.user.id;
+    return this.postService.findAllByOwner(userId);
+  }
+
   @Get(":id")
   @HttpCode(HttpStatus.OK)
   @Roles(Role.USER, Role.ADMIN)
   public async findById(@Param("id") postId) {
-    return await this.postService.findById(postId)
+    return await this.postService.findById(postId);
   }
 
   @Delete(":id")

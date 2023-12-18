@@ -9,9 +9,8 @@ import { Role } from "src/auth/enum/roles.enum";
 import { Model } from "mongoose";
 import { InjectModel } from "@nestjs/mongoose";
 import { AuthService } from "src/auth/auth.service";
-import { Post_schema_user } from "./dto/user.signup.dto";
+import { Patch_schema_data_user, Post_schema_user } from "./dto/user.dto";
 import * as bcrypt from "bcryptjs";
-import { Patch_schema_user } from "./dto/user.update.dto";
 
 @Injectable()
 export class UserService {
@@ -53,9 +52,7 @@ export class UserService {
       senha: hashedPassword,
       role: Role.USER,
     });
-    if (!user) {
-      throw new NotFoundException("User not found.");
-    }
+    if (!user) throw new NotFoundException("Usário não encontrado.");
     const { token } = this.authService.generateToken({
       id: user._id,
       username: user.username,
@@ -65,20 +62,18 @@ export class UserService {
     return { token, id: user._id, nome, email, username };
   }
 
-  public async findAll(): Promise<User[]> {
-    return this.userModel.find().sort({ createdAt: -1 }).limit(10).exec();
+  public async find(cursor: Date, pageSize: number = 10): Promise<User[]> {
+    return this.userModel
+      .find({ createdAt: { $lt: cursor } }) // Busca itens criados antes do cursor
+      .sort({ createdAt: -1 }) // Ordena do mais recente para o mais antigo
+      .limit(pageSize) // Limita o número de itens retornados
+      .exec();
   }
 
   public async findById(id: string): Promise<User> {
-    try {
-      const document = await this.userModel.findById(id).exec();
-      if (!document) {
-        throw new NotFoundException(`Document com ID ${id} não encontrado!`);
-      }
-      return document;
-    } catch (error) {
-      throw new NotFoundException(`Document com ID ${id} não encontrado!`);
-    }
+    const user = await this.userModel.findById(id).exec();
+    if (!user) throw new NotFoundException("Usuário não encontrado");
+    return user;
   }
 
   async findByIndex(index: number): Promise<User | null> {
@@ -90,34 +85,28 @@ export class UserService {
 
   public async patchById(
     id: string,
-    patch_schema_user: Patch_schema_user
+    patch_schema_user: Patch_schema_data_user
   ): Promise<User> {
-    const document = await this.findById(id);
-    if (!document) {
-      throw new NotFoundException(`Document com ID ${id} não encontrado!`);
-    }
-    Object.assign(document, patch_schema_user);
-    const updatedDocument = await document.save();
-    return updatedDocument;
+    const user = await this.findById(id);
+    if (!user) throw new NotFoundException("Usuário não encontrado");
+    Object.assign(user, patch_schema_user);
+    const updatedUser = await user.save();
+    return updatedUser;
   }
 
-  public async deleteById(id: string): Promise<User> {
-    const document = await this.findById(id);
-    if (!document) {
-      throw new NotFoundException(`Document com ID ${id} não encontrado!`);
-    }
-    const deletedDocument = await this.userModel.findByIdAndRemove(id).exec();
-    return deletedDocument;
+  public async deleteById(id: string) {
+    const user = await this.findById(id);
+    if (!user) throw new NotFoundException("Usuário não encontrado");
+    await this.userModel.findByIdAndRemove(id).exec();
+    return user;
   }
 
-  async deleteByIndex(index: number): Promise<User | null> {
+  async deleteByIndex(index: number) {
     const user = await this.userModel
       .findOne()
       .skip(index - 1)
       .exec();
-    if (!user) {
-      return null;
-    }
+    if (!user) throw new NotFoundException("Usuário não encontrado");
     await user.deleteOne();
     return user;
   }

@@ -13,6 +13,7 @@ import {
   BadRequestException,
   Req,
   Header,
+  Query,
 } from "@nestjs/common";
 import { User } from "./schemas/user.schemas";
 import { Role } from "src/auth/enum/roles.enum";
@@ -23,9 +24,8 @@ import { JwtAuth } from "src/auth/decorator/jwt.auth.decorator";
 import { Response } from "express";
 import { UserService } from "./user.service";
 import { OwnerChecker } from "src/auth/decorator/ownership.checker.decorator";
-import { Post_schema_user } from "./dto/user.signup.dto";
+import { Patch_schema_data_user, Post_schema_user } from "./dto/user.dto";
 import { UserOwnershipChecker } from "./owner/user.ownershup.checker";
-import { Patch_schema_user } from "./dto/user.update.dto";
 
 @Controller("user")
 @JwtAuth()
@@ -50,8 +50,13 @@ export class UserController {
   @Get()
   @Roles(Role.ADMIN)
   @HttpCode(HttpStatus.OK)
-  public async findAll(): Promise<User[]> {
-    return this.userService.findAll();
+  public async find(
+    @Query("cursor") cursor: string,
+    @Query("pageSize") pageSize: string
+  ) {
+    const pageSizeNumber = parseInt(pageSize, 10) || 10;
+    const cursorDate = cursor ? new Date(cursor) : new Date();
+    return await this.userService.find(cursorDate, pageSizeNumber);
   }
 
   @Get(":id")
@@ -59,9 +64,7 @@ export class UserController {
   async getUser(@Param("id") param: string) {
     if (Types.ObjectId.isValid(param)) {
       const user = await this.userService.findById(param);
-      if (!user) {
-        throw new NotFoundException(`User not found.`);
-      }
+      if (!user) throw new NotFoundException("Usário não encontrado.");
       return user;
     } else {
       const index = parseInt(param, 10);
@@ -69,9 +72,7 @@ export class UserController {
         throw new BadRequestException("Invalid index");
       }
       const user = await this.userService.findByIndex(index);
-      if (!user) {
-        throw new NotFoundException(`User not found.`);
-      }
+      if (!user) throw new NotFoundException("Usário não encontrado.");
       return user;
     }
   }
@@ -81,17 +82,9 @@ export class UserController {
   @HttpCode(HttpStatus.NO_CONTENT)
   public async patchById(
     @Param("id") id: string,
-    @Body() patch_schema_user: Patch_schema_user,
+    @Body() patch_schema_user: Patch_schema_data_user
   ) {
-    try {
-      const updatedDocument = await this.userService.patchById(
-        id,
-        patch_schema_user
-      );
-      return updatedDocument;
-    } catch (error) {
-      throw new NotFoundException(error.message);
-    }
+    return await this.userService.patchById(id, patch_schema_user);
   }
 
   @Delete(":id")
@@ -99,19 +92,15 @@ export class UserController {
   @HttpCode(HttpStatus.NO_CONTENT)
   public async delete(@Param("id") param: string) {
     if (Types.ObjectId.isValid(param)) {
-      const deletedDocument = await this.userService.deleteById(param);
-      if (!deletedDocument) {
-        throw new NotFoundException(`User not found.`);
-      }
+      const deletedUser = await this.userService.deleteById(param);
+      if (!deletedUser) throw new NotFoundException("Usário não encontrado.");
     } else {
       const index = parseInt(param, 10);
       if (isNaN(index) || index < 1) {
         throw new BadRequestException("Index inválido");
       }
-      const deletedDocument = await this.userService.deleteByIndex(index);
-      if (!deletedDocument) {
-        throw new NotFoundException(`User not found.`);
-      }
+      const deletedUser = await this.userService.deleteByIndex(index);
+      if (!deletedUser) throw new NotFoundException("Usário não encontrado.");
     }
   }
 }

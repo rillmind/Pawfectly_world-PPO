@@ -4,7 +4,7 @@ import { Animal } from "src/animal/schemas/animal.schemas";
 import { User } from "src/user/schemas/user.schemas";
 
 @Schema({ timestamps: true })
-export class Post extends Document {
+export class Posts extends Document {
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: "User" })
   usuario: User;
 
@@ -21,4 +21,4 @@ export class Post extends Document {
   like: boolean;
 }
 
-export const PostSchema = SchemaFactory.createForClass(Post);
+export const PostSchema = SchemaFactory.createForClass(Posts);

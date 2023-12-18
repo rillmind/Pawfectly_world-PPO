@@ -10,9 +10,9 @@ export class Post_schema_post {
 
   @IsString()
   @IsOptional()
-  readonly pet: string;
+  readonly pet?: string;
 
   @IsBoolean()
   @IsOptional()
-  readonly like: string;
+  readonly like?: string;
 }
