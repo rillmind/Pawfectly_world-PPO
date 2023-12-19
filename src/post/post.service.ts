@@ -22,16 +22,20 @@ export class PostService {
     return await this.postModel.find();
   }
 
-  public async createPost(post_schema_post: Post_schema_post, userSub: string) {
-    const { descricao, img, pet, like } = post_schema_post;
+  public async createPost(
+    post_schema_post: Post_schema_post,
+    userSub: string,
+    filePath: string
+  ) {
+    const { descricao, pet, like } = post_schema_post;
     const id = await this.userModel.findById(userSub);
     const post = await this.postModel.create({
-      img,
       pet,
       like,
       user: id,
       descricao,
       nome: id.nome,
+      img: filePath,
       username: id.username,
     });
     if (!post) throw new BadRequestException();

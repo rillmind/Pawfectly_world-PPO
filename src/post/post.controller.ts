@@ -8,6 +8,9 @@ import {
   Param,
   Post,
   Req,
+  Res,
+  UploadedFile,
+  UseInterceptors,
 } from "@nestjs/common";
 import { JwtAuth } from "src/auth/decorator/jwt.auth.decorator";
 import { OwnerChecker } from "src/auth/decorator/ownership.checker.decorator";
@@ -20,6 +23,7 @@ import { Posts } from "./schemas/post.schema";
 import { diskStorage } from "multer";
 import * as path from "path";
 import { UserInterceptor } from "src/auth/interceptor/jwt.interceptor";
+import { FileInterceptor } from "@nestjs/platform-express";
 
 @Controller("post")
 @JwtAuth()
@@ -37,9 +41,25 @@ export class PostController {
   @Post()
   @Roles(Role.USER, Role.ADMIN)
   @HttpCode(HttpStatus.CREATED)
-  public async signUp(@Body() post_schema_post: Post_schema_post, @Req() req) {
+  @UseInterceptors(
+    FileInterceptor("file", {
+      storage: diskStorage({
+        destination: "./uploads/",
+        filename: function (req, file, callback) {
+          const fileName = path.parse(file.originalname).name.replace(/\s/g, "") + Date.now();
+          const extension = path.parse(file.originalname).ext;
+          callback(null, `${fileName} ${extension}`)
+        },
+      }),
+    })
+  )
+  public async signUp(
+    @Body() post_schema_post: Post_schema_post,
+    @UploadedFile() file,
+    @Req() req
+  ) {
     const userId = req.user.id;
-    return await this.postService.createPost(post_schema_post, userId);
+    return await this.postService.createPost(post_schema_post, userId, file.path);
   }
 
   @Get("myposts")
