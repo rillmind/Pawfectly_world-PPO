@@ -66,11 +66,8 @@ export class AnimalController {
   @Get(":id")
   @HttpCode(HttpStatus.OK)
   @Roles(Role.ADMIN, Role.USER)
-  public async findById(
-    @Param("id") id: string
-  ): Promise<{ nome: string; id: any }> {
-    const animal = await this.animalService.findById(id);
-    return { id: animal.id, nome: animal.nome };
+  public async findById(@Param("id") id: string) {
+    return await this.animalService.findById(id);
   }
 
   @Patch(":id")
