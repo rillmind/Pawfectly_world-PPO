@@ -22,8 +22,8 @@ export class AdoptionService {
     return await this.adoptionModel.find();
   }
 
-  public async findMy(userId: string) {
-    return await this.adoptionModel.find({
+  public async findMyAdoptionRequests(userId: string) {
+    return await this.adoptionModel.findOne({
       owner: userId,
     });
   }

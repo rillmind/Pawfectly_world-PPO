@@ -47,9 +47,9 @@ export class AdoptionController {
   @Get("my")
   @HttpCode(HttpStatus.OK)
   @Roles(Role.USER, Role.ADMIN)
-  public async findAllByOwner(@Req() req): Promise<Adoption[]> {
+  public async findAllByOwner(@Req() req): Promise<Adoption> {
     const userId = req.user.id;
-    return this.adoptionService.findMy(userId);
+    return this.adoptionService.findMyAdoptionRequests(userId);
   }
 
   @Roles()
