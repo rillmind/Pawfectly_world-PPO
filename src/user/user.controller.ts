@@ -37,7 +37,7 @@ import { UserOwnershipChecker } from "./owner/user.ownershup.checker";
 import { UserService } from "./user.service";
 
 @Controller("user")
-@JwtAuth()
+@JwtAuth(Role.ADMIN)
 @OwnerChecker(UserOwnershipChecker)
 export class UserController {
   constructor(private userService: UserService) {}
@@ -68,7 +68,7 @@ export class UserController {
     return await this.userService.find(cursorDate, pageSizeNumber);
   }
 
-  @Post()
+  @Post("ft")
   @Roles(Role.USER, Role.ADMIN)
   @HttpCode(HttpStatus.OK)
   @UseInterceptors(
@@ -90,7 +90,7 @@ export class UserController {
   }
 
   @Get(":id")
-  @Roles(Role.ADMIN, Role.USER)
+  @Roles(Role.ADMIN, Role.OWNER)
   async getUser(@Param("id") param: string) {
     if (Types.ObjectId.isValid(param)) {
       const user = await this.userService.findById(param);
@@ -108,7 +108,7 @@ export class UserController {
   }
 
   @Patch(":id")
-  @Roles(Role.ADMIN, Role.USER)
+  @Roles(Role.ADMIN, Role.OWNER)
   @HttpCode(HttpStatus.NO_CONTENT)
   public async patchUserById(
     @Param("id") id: string,
@@ -118,7 +118,7 @@ export class UserController {
   }
 
   @Patch("data/:id")
-  @Roles(Role.ADMIN, Role.USER)
+  @Roles(Role.ADMIN, Role.OWNER)
   @HttpCode(HttpStatus.NO_CONTENT)
   public async patchUserDataById(
     @Param("id") id: string,
@@ -128,7 +128,7 @@ export class UserController {
   }
 
   @Patch("pass/:id")
-  @Roles(Role.ADMIN, Role.USER)
+  @Roles(Role.ADMIN, Role.OWNER)
   @HttpCode(HttpStatus.NO_CONTENT)
   public async patchUserPassById(
     @Param("id") id: string,
@@ -138,7 +138,7 @@ export class UserController {
   }
 
   @Delete(":id")
-  @Roles(Role.ADMIN, Role.USER)
+  @Roles(Role.ADMIN, Role.OWNER)
   @HttpCode(HttpStatus.NO_CONTENT)
   public async delete(@Param("id") param: string) {
     if (Types.ObjectId.isValid(param)) {
