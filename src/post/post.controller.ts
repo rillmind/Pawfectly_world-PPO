@@ -17,6 +17,9 @@ import { UserOwnershipChecker } from "src/user/owner/user.ownershup.checker";
 import { Post_schema_post } from "./dto/post.dto";
 import { PostService } from "./post.service";
 import { Posts } from "./schemas/post.schema";
+import { diskStorage } from "multer";
+import * as path from "path";
+import { UserInterceptor } from "src/auth/interceptor/jwt.interceptor";
 
 @Controller("post")
 @JwtAuth()

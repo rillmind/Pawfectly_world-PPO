@@ -6,10 +6,16 @@ import { User } from "src/user/schemas/user.schemas";
 @Schema({ timestamps: true })
 export class Posts extends Document {
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: "User" })
-  usuario: User;
+  user: User;
 
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: "Animal" })
-  animal: Animal;
+  pet: Animal;
+
+  @Prop()
+  nome: string;
+
+  @Prop()
+  username: string;
 
   @Prop()
   descricao: string;

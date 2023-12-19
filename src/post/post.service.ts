@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
 import { User } from "src/user/schemas/user.schemas";
@@ -18,23 +22,32 @@ export class PostService {
     return await this.postModel.find();
   }
 
-  public async createPost(post_schema_post: Post_schema_post, userId: string) {
+  public async createPost(post_schema_post: Post_schema_post, userSub: string) {
     const { descricao, img, pet, like } = post_schema_post;
-    const id = await this.userModel.findById(userId);
+    const id = await this.userModel.findById(userSub);
     const post = await this.postModel.create({
       img,
       pet,
       like,
       user: id,
       descricao,
+      nome: id.nome,
+      username: id.username,
     });
     if (!post) throw new BadRequestException();
-    return post;
+    return {
+      _id: post._id,
+      user: id.id,
+      nome: id.nome,
+      username: id.username,
+      pet,
+      descricao: post.descricao,
+    };
   }
 
   public async findAllByOwner(userId: string): Promise<Posts[]> {
     return await this.postModel.find({
-      usuario: userId,
+      user: userId,
     });
   }
 

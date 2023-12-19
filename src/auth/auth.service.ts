@@ -34,11 +34,11 @@ export class AuthService {
       $or: [{ email: email_ou_username }, { username: email_ou_username }],
     });
     if (!user) {
-      throw new UnauthorizedException("Email ou username inválidos");
+      throw new UnprocessableEntityException("Email ou username inválidos");
     }
     const isPasswordMatched = await bcrypt.compare(senha, user.senha);
     if (!isPasswordMatched) {
-      throw new UnauthorizedException("Senha inválida");
+      throw new UnprocessableEntityException("Senha inválida");
     }
     const { token } = this.generateToken({
       id: user._id,
