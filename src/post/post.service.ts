@@ -25,9 +25,9 @@ export class PostService {
   public async createPost(
     post_schema_post: Post_schema_post,
     userSub: string,
-    filePath: string
+    // filePath: string
   ) {
-    const { descricao, pet, like } = post_schema_post;
+    const { descricao, img, pet, like } = post_schema_post;
     const id = await this.userModel.findById(userSub);
     const post = await this.postModel.create({
       pet,
@@ -35,7 +35,7 @@ export class PostService {
       user: id,
       descricao,
       nome: id.nome,
-      img: filePath,
+      img,
       username: id.username,
     });
     if (!post) throw new BadRequestException();

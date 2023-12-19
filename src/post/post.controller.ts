@@ -41,25 +41,25 @@ export class PostController {
   @Post()
   @Roles(Role.USER, Role.ADMIN)
   @HttpCode(HttpStatus.CREATED)
-  @UseInterceptors(
-    FileInterceptor("file", {
-      storage: diskStorage({
-        destination: "./uploads/",
-        filename: function (req, file, callback) {
-          const fileName = path.parse(file.originalname).name.replace(/\s/g, "") + Date.now();
-          const extension = path.parse(file.originalname).ext;
-          callback(null, `${fileName} ${extension}`)
-        },
-      }),
-    })
-  )
+  // @UseInterceptors(
+  //   FileInterceptor("file", {
+  //     storage: diskStorage({
+  //       destination: "./uploads/",
+  //       filename: function (req, file, callback) {
+  //         const fileName = path.parse(file.originalname).name.replace(/\s/g, "") + Date.now();
+  //         const extension = path.parse(file.originalname).ext;
+  //         callback(null, `${fileName} ${extension}`)
+  //       },
+  //     }),
+  //   })
+  // )
   public async signUp(
     @Body() post_schema_post: Post_schema_post,
     @UploadedFile() file,
     @Req() req
   ) {
     const userId = req.user.id;
-    return await this.postService.createPost(post_schema_post, userId, file.path);
+    return await this.postService.createPost(post_schema_post, userId, /*file.path*/);
   }
 
   @Get("myposts")

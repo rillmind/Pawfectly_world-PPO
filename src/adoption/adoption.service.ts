@@ -18,6 +18,16 @@ export class AdoptionService {
     private adoptionModel: Model<Adoption>
   ) {}
 
+  public async find() {
+    return await this.adoptionModel.find();
+  }
+
+  public async findMy(userId: string) {
+    return await this.adoptionModel.find({
+      owner: userId,
+    });
+  }
+
   public async toAdopt(
     post_schema_adoption: Post_schema_adoption,
     adopterId: string
