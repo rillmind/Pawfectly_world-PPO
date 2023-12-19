@@ -32,6 +32,11 @@ export class Patch_schema_user {
   readonly email: string;
 }
 
+export class Post_schema_user_foto {
+  @IsOptional()
+  readonly foto_de_perfil?: any;
+}
+
 export class Patch_schema_user_pass {
   @IsString()
   @IsNotEmpty()

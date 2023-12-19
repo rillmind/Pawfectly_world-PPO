@@ -1,31 +1,40 @@
 import {
-  Res,
-  Get,
-  Post,
+  BadRequestException,
   Body,
-  Patch,
-  Param,
-  Delete,
-  HttpCode,
   Controller,
+  Delete,
+  Get,
+  Header,
+  HttpCode,
   HttpStatus,
   NotFoundException,
-  BadRequestException,
-  Req,
-  Header,
+  Param,
+  Patch,
+  Post,
   Query,
+  Req,
+  Res,
+  UploadedFile,
+  UseInterceptors,
 } from "@nestjs/common";
-import { User } from "./schemas/user.schemas";
-import { Role } from "src/auth/enum/roles.enum";
-import { Roles } from "src/auth/decorator/roles.decorator";
-import { Types } from "mongoose";
-import { Public } from "src/auth/decorator/public.auth.decorator";
-import { JwtAuth } from "src/auth/decorator/jwt.auth.decorator";
+import { FileInterceptor } from "@nestjs/platform-express";
 import { Response } from "express";
-import { UserService } from "./user.service";
+import { Types } from "mongoose";
+import { diskStorage } from "multer";
+import path from "path";
+import { JwtAuth } from "src/auth/decorator/jwt.auth.decorator";
 import { OwnerChecker } from "src/auth/decorator/ownership.checker.decorator";
-import { Patch_schema_user, Patch_schema_user_data, Patch_schema_user_pass, Post_schema_user } from "./dto/user.dto";
+import { Public } from "src/auth/decorator/public.auth.decorator";
+import { Roles } from "src/auth/decorator/roles.decorator";
+import { Role } from "src/auth/enum/roles.enum";
+import {
+  Patch_schema_user,
+  Patch_schema_user_data,
+  Patch_schema_user_pass,
+  Post_schema_user,
+} from "./dto/user.dto";
 import { UserOwnershipChecker } from "./owner/user.ownershup.checker";
+import { UserService } from "./user.service";
 
 @Controller("user")
 @JwtAuth()
@@ -57,6 +66,27 @@ export class UserController {
     const pageSizeNumber = parseInt(pageSize, 10) || 10;
     const cursorDate = cursor ? new Date(cursor) : new Date();
     return await this.userService.find(cursorDate, pageSizeNumber);
+  }
+
+  @Post()
+  @Roles(Role.USER, Role.ADMIN)
+  @HttpCode(HttpStatus.OK)
+  @UseInterceptors(
+    FileInterceptor("file", {
+      storage: diskStorage({
+        destination: "./uploads/",
+        filename: function (req, file, callback) {
+          const fileName =
+            path.parse(file.originalname).name.replace(/\s/g, "") + Date.now();
+          const extension = path.parse(file.originalname).ext;
+          callback(null, `${fileName} ${extension}`);
+        },
+      }),
+    })
+  )
+  public async fotoDePerfil(@UploadedFile() file, @Req() req, @Body() body) {
+    const user = req.user.id;
+    return await this.userService.updateUserById(user, body, file.path);
   }
 
   @Get(":id")

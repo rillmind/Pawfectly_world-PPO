@@ -1,21 +1,21 @@
 import {
-  Injectable,
   ConflictException,
+  Injectable,
   NotFoundException,
   UnprocessableEntityException,
 } from "@nestjs/common";
-import { User } from "./schemas/user.schemas";
-import { Role } from "src/auth/enum/roles.enum";
-import { Model } from "mongoose";
 import { InjectModel } from "@nestjs/mongoose";
-import { AuthService } from "src/auth/auth.service";
-import {
-  Patch_schema_user_data,
-  Patch_schema_user,
-  Post_schema_user,
-  Patch_schema_user_pass,
-} from "./dto/user.dto";
 import * as bcrypt from "bcryptjs";
+import { Model } from "mongoose";
+import { AuthService } from "src/auth/auth.service";
+import { Role } from "src/auth/enum/roles.enum";
+import {
+  Patch_schema_user,
+  Patch_schema_user_data,
+  Patch_schema_user_pass,
+  Post_schema_user,
+} from "./dto/user.dto";
+import { User } from "./schemas/user.schemas";
 
 @Injectable()
 export class UserService {
@@ -88,11 +88,38 @@ export class UserService {
       .exec();
   }
 
+  async updateUserById(
+    id: string,
+    userData: any,
+    filePath: string
+  ): Promise<User> {
+    const user = await this.userModel.findById(id);
+    if (!user) {
+      throw new NotFoundException("Usuário não encontrado");
+    }
+
+    // Atualize os campos do usuário com base nos dados fornecidos
+    const { nome, username, email, ...otherData } = userData;
+
+    if (nome) user.nome = nome;
+    if (username) user.username = username;
+    if (email) user.email = email;
+    // ... atualize outros campos conforme necessário
+
+    // Se um arquivo de imagem foi carregado, atualize o campo de imagem com o caminho do arquivo
+    if (filePath) {
+      user.foto_de_perfil = filePath; // Supondo que você queira salvar o caminho do arquivo
+    }
+
+    await user.save();
+    return user;
+  }
+
   public async patchUserById(
     id: string,
     patch_schema_user: Patch_schema_user
   ): Promise<User> {
-    const user = await this.findById(id);
+    const user = await this.userModel.findById(id);
     if (!user) throw new NotFoundException("Usuário não encontrado");
     Object.assign(user, patch_schema_user);
     const updatedUser = await user.save();

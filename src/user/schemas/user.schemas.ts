@@ -25,6 +25,9 @@ export class User extends Document {
   foto_de_perfil: string;
 
   @Prop()
+  imgContentType: string;
+
+  @Prop()
   biografia: string;
 
   @Prop()
