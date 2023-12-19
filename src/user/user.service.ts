@@ -9,7 +9,12 @@ import { Role } from "src/auth/enum/roles.enum";
 import { Model } from "mongoose";
 import { InjectModel } from "@nestjs/mongoose";
 import { AuthService } from "src/auth/auth.service";
-import { Patch_schema_data_user, Post_schema_user } from "./dto/user.dto";
+import {
+  Patch_schema_user_data,
+  Patch_schema_user,
+  Post_schema_user,
+  Patch_schema_user_pass,
+} from "./dto/user.dto";
 import * as bcrypt from "bcryptjs";
 
 @Injectable()
@@ -83,13 +88,43 @@ export class UserService {
       .exec();
   }
 
-  public async patchById(
+  public async patchUserById(
     id: string,
-    patch_schema_user: Patch_schema_data_user
+    patch_schema_user: Patch_schema_user
   ): Promise<User> {
     const user = await this.findById(id);
     if (!user) throw new NotFoundException("Usuário não encontrado");
     Object.assign(user, patch_schema_user);
+    const updatedUser = await user.save();
+    return updatedUser;
+  }
+
+  public async patchUserDataById(
+    id: string,
+    patch_schema_user_data: Patch_schema_user_data
+  ): Promise<User> {
+    const user = await this.findById(id);
+    if (!user) throw new NotFoundException("Usuário não encontrado");
+    Object.assign(user, patch_schema_user_data);
+    const updatedUser = await user.save();
+    return updatedUser;
+  }
+
+  public async patchUserPassById(
+    id: string,
+    patch_schema_user_pass: Patch_schema_user_pass
+  ): Promise<User> {
+    const user = await this.findById(id);
+    if (!user) throw new NotFoundException("Usuário não encontrado");
+    if (patch_schema_user_pass.senha) {
+      const salt = await bcrypt.genSalt();
+      const hashedPassword = await bcrypt.hash(
+        patch_schema_user_pass.senha,
+        salt
+      );
+      patch_schema_user_pass.senha = hashedPassword;
+    }
+    Object.assign(user, patch_schema_user_pass);
     const updatedUser = await user.save();
     return updatedUser;
   }

@@ -1,24 +1,44 @@
 import { IsEmail, IsNotEmpty, IsOptional, IsString } from "class-validator";
 
 export class Post_schema_user {
-  @IsNotEmpty()
   @IsString()
+  @IsNotEmpty()
   readonly nome: string;
 
-  @IsNotEmpty()
   @IsString()
+  @IsNotEmpty()
   readonly username: string;
 
+  @IsString()
   @IsNotEmpty()
-  @IsEmail()
   readonly email: string;
 
-  @IsNotEmpty()
   @IsString()
+  @IsNotEmpty()
   readonly senha: string;
 }
 
-export class Patch_schema_data_user {
+export class Patch_schema_user {
+  @IsString()
+  @IsNotEmpty()
+  readonly nome: string;
+
+  @IsString()
+  @IsNotEmpty()
+  readonly username: string;
+
+  @IsString()
+  @IsNotEmpty()
+  readonly email: string;
+}
+
+export class Patch_schema_user_pass {
+  @IsString()
+  @IsNotEmpty()
+  senha: string;
+}
+
+export class Patch_schema_user_data {
   @IsString()
   @IsOptional()
   readonly cpf_ou_cnpj?: string;

@@ -24,7 +24,7 @@ import { JwtAuth } from "src/auth/decorator/jwt.auth.decorator";
 import { Response } from "express";
 import { UserService } from "./user.service";
 import { OwnerChecker } from "src/auth/decorator/ownership.checker.decorator";
-import { Patch_schema_data_user, Post_schema_user } from "./dto/user.dto";
+import { Patch_schema_user, Patch_schema_user_data, Patch_schema_user_pass, Post_schema_user } from "./dto/user.dto";
 import { UserOwnershipChecker } from "./owner/user.ownershup.checker";
 
 @Controller("user")
@@ -60,7 +60,7 @@ export class UserController {
   }
 
   @Get(":id")
-  @Roles(Role.ADMIN, Role.OWNER)
+  @Roles(Role.ADMIN, Role.USER)
   async getUser(@Param("id") param: string) {
     if (Types.ObjectId.isValid(param)) {
       const user = await this.userService.findById(param);
@@ -78,17 +78,37 @@ export class UserController {
   }
 
   @Patch(":id")
-  @Roles(Role.ADMIN, Role.OWNER)
+  @Roles(Role.ADMIN, Role.USER)
   @HttpCode(HttpStatus.NO_CONTENT)
-  public async patchById(
+  public async patchUserById(
     @Param("id") id: string,
-    @Body() patch_schema_user: Patch_schema_data_user
+    @Body() patch_schema_user: Patch_schema_user
   ) {
-    return await this.userService.patchById(id, patch_schema_user);
+    return await this.userService.patchUserById(id, patch_schema_user);
+  }
+
+  @Patch("data/:id")
+  @Roles(Role.ADMIN, Role.USER)
+  @HttpCode(HttpStatus.NO_CONTENT)
+  public async patchUserDataById(
+    @Param("id") id: string,
+    @Body() patch_schema_user_data: Patch_schema_user_data
+  ) {
+    return await this.userService.patchUserDataById(id, patch_schema_user_data);
+  }
+
+  @Patch("pass/:id")
+  @Roles(Role.ADMIN, Role.USER)
+  @HttpCode(HttpStatus.NO_CONTENT)
+  public async patchUserPassById(
+    @Param("id") id: string,
+    @Body() patch_schema_user_pass: Patch_schema_user_pass
+  ) {
+    return await this.userService.patchUserPassById(id, patch_schema_user_pass);
   }
 
   @Delete(":id")
-  @Roles(Role.ADMIN, Role.OWNER)
+  @Roles(Role.ADMIN, Role.USER)
   @HttpCode(HttpStatus.NO_CONTENT)
   public async delete(@Param("id") param: string) {
     if (Types.ObjectId.isValid(param)) {
