@@ -63,6 +63,13 @@ export class AnimalController {
     return this.animalService.findAllByOwner(userId);
   }
 
+  @Get("petstoadopt")
+  @HttpCode(HttpStatus.OK)
+  @Roles(Role.USER, Role.ADMIN)
+  public async findPetsToAdopt(): Promise<Animal[]> {
+    return this.animalService.findPetsToAdopt();
+  }
+
   @Get(":id")
   @HttpCode(HttpStatus.OK)
   @Roles(Role.ADMIN, Role.USER)

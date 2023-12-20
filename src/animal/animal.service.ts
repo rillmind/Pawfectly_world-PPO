@@ -41,6 +41,12 @@ export class AnimalService {
     return this.animalModel.find();
   }
 
+  public async findPetsToAdopt() {
+    return await this.animalModel.find({
+      adocao: true,
+    });
+  }
+
   public async findAllByOwner(userId: string): Promise<Animal[]> {
     return await this.animalModel.find({
       dono: userId,
@@ -69,8 +75,8 @@ export class AnimalService {
     const post = await this.postModel.find({
       pet: id,
     });
-    console.log(post)
-    await this.postModel.findByIdAndDelete(post)
+    console.log(post);
+    await this.postModel.findByIdAndDelete(post);
     return await this.animalModel.findByIdAndRemove(id).exec();
   }
 
