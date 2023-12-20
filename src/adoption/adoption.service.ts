@@ -58,11 +58,12 @@ export class AdoptionService {
   public async toAccept(adoptionId: string) {
     const adoption = await this.adoptionModel.findById(adoptionId);
     if (!adoption) throw new NotFoundException("Adoção não encontrada.");
-    return this.animalModel.findByIdAndUpdate(
+    await this.animalModel.findByIdAndUpdate(
       adoption.pet,
       { dono: adoption.adopter },
       { new: true }
     );
+    await this.adoptionModel.findByIdAndDelete(adoption);
   }
 
   public async toRefuse(adoptionId: string) {
