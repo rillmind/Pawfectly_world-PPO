@@ -19,7 +19,7 @@ export class PostService {
   ) {}
 
   public async find(): Promise<Posts[]> {
-    return await this.postModel.find();
+    return await this.postModel.find().sort({ createdAt: -1 });
   }
 
   public async createPost(
@@ -52,6 +52,12 @@ export class PostService {
   public async findAllByOwner(userId: string): Promise<Posts[]> {
     return await this.postModel.find({
       user: userId,
+    });
+  }
+
+  public async findAllByPetId(petId: string): Promise<Posts[]> {
+    return await this.postModel.find({
+      pet: petId,
     });
   }
 

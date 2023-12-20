@@ -18,20 +18,20 @@ import { Post_schema_adoption } from "./dto/adoption.dto";
 import { Adoption } from "./schema/adoption.schema";
 
 @Controller("adoption")
-@JwtAuth(Role.ADMIN, Role.USER)
+@JwtAuth()
 export class AdoptionController {
   constructor(private adoptionService: AdoptionService) {}
 
   @Get()
+  @Roles(Role.ADMIN)
   @HttpCode(HttpStatus.OK)
-  @Roles(Role.USER, Role.ADMIN)
   public async find() {
     return this.adoptionService.find();
   }
 
   @Post()
-  @Roles()
   @HttpCode(HttpStatus.OK)
+  @Roles(Role.USER, Role.ADMIN)
   public async toAdopt(
     @Req() req,
     @Body() post_schema_adoption: Post_schema_adoption
@@ -52,15 +52,15 @@ export class AdoptionController {
     return this.adoptionService.findMyAdoptionRequests(userId);
   }
 
-  @Roles()
   @Patch(":id")
+  @Roles(Role.USER, Role.ADMIN)
   @HttpCode(HttpStatus.ACCEPTED)
   public async toAccept(@Param("id") adoptionId: string) {
     return await this.adoptionService.toAccept(adoptionId);
   }
 
-  @Roles()
   @Delete(":id")
+  @Roles(Role.USER, Role.ADMIN)
   @HttpCode(HttpStatus.NO_CONTENT)
   public async toRefuse(@Param("id") adoptionId: string) {
     return await this.adoptionService.toRefuse(adoptionId);
