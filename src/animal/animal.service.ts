@@ -4,12 +4,15 @@ import { Model } from "mongoose";
 import { User } from "src/user/schemas/user.schemas";
 import { Patch_schema_animal, Post_schema_animal } from "./dto/animal.dto";
 import { Animal } from "./schemas/animal.schemas";
+import { Posts } from "src/post/schemas/post.schema";
 
 @Injectable()
 export class AnimalService {
   constructor(
     @InjectModel("Animal")
     private animalModel: Model<Animal>,
+    @InjectModel("Post")
+    private postModel: Model<Posts>,
     @InjectModel("User")
     private userModel: Model<User>
   ) {}
@@ -63,6 +66,11 @@ export class AnimalService {
   public async deleteById(id: string): Promise<Animal> {
     const animal = await this.findById(id);
     if (!animal) throw new NotFoundException("Pet não encontrado");
+    const post = await this.postModel.find({
+      pet: id,
+    });
+    console.log(post)
+    await this.postModel.findByIdAndDelete(post)
     return await this.animalModel.findByIdAndRemove(id).exec();
   }
 

@@ -1,12 +1,11 @@
 import { Module } from "@nestjs/common";
 import { MongooseModule } from "@nestjs/mongoose";
+import { AnimalModule } from "src/animal/animal.module";
 import { AnimalSchema } from "src/animal/schemas/animal.schemas";
 import { UserSchema } from "src/user/schemas/user.schemas";
 import { UserModule } from "src/user/user.module";
 import { AdoptionController } from "./adoption.controller";
 import { AdoptionService } from "./adoption.service";
-import { AnimalModule } from "src/animal/animal.module";
-import { AnimalService } from "src/animal/animal.service";
 import { AdoptionSchema } from "./schema/adoption.schema";
 
 @Module({
@@ -17,7 +16,7 @@ import { AdoptionSchema } from "./schema/adoption.schema";
     AnimalModule,
     UserModule,
   ],
-  providers: [AnimalService, AdoptionService],
+  providers: [AdoptionService],
   controllers: [AdoptionController],
 })
 export class AdoptionModule {}
