@@ -63,10 +63,11 @@ export class AdoptionService {
       { dono: adoption.adopter },
       { new: true }
     );
-    await this.adoptionModel.findByIdAndDelete(adoption);
+    await this.adoptionModel.findByIdAndDelete(adoption.id);
   }
 
   public async toRefuse(adoptionId: string) {
-    return await this.adoptionModel.findByIdAndDelete(adoptionId);
+    const adoption = await this.adoptionModel.findById(adoptionId);
+    return await this.adoptionModel.findByIdAndDelete(adoption.id);
   }
 }
