@@ -70,12 +70,18 @@ export class PostController {
     return this.postService.findAllByOwner(userId);
   }
 
+  @Get("others/:id")
+  @HttpCode(HttpStatus.OK)
+  @Roles(Role.USER, Role.ADMIN)
+  public async othersPosts(@Param("id") userId: string) {
+    return await this.postService.findAllByOwner(userId)
+  }
+ 
   @Get("petposts/:id")
   @HttpCode(HttpStatus.OK)
   @Roles(Role.USER, Role.ADMIN)
   public async findAllByPetId(@Param("id") petId): Promise<Posts[]> {
-    console.log(petId)
-    return this.postService.findAllByOwner(petId);
+    return this.postService.findAllByPetId(petId);
   }
 
   @Get(":id")
