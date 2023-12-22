@@ -52,13 +52,13 @@ export class PostService {
   public async findAllByOwner(userId: string): Promise<Posts[]> {
     return await this.postModel.find({
       user: userId,
-    });
+    }).sort({ createdAt: -1 });
   }
 
   public async findAllByPetId(petId: string): Promise<Posts[]> {
     return await this.postModel.find({
       pet: petId,
-    });
+    }).sort({ createdAt: -1 });
   }
 
   public async findById(id: string) {

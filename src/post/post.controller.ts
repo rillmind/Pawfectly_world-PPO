@@ -59,7 +59,10 @@ export class PostController {
     @Req() req
   ) {
     const userId = req.user.id;
-    return await this.postService.createPost(post_schema_post, userId, /*file.path*/);
+    return await this.postService.createPost(
+      post_schema_post,
+      userId /*file.path*/
+    );
   }
 
   @Get("myposts")
@@ -68,20 +71,6 @@ export class PostController {
   public async findAllByOwner(@Req() req): Promise<Posts[]> {
     const userId = req.user.id;
     return this.postService.findAllByOwner(userId);
-  }
-
-  @Get("others/:id")
-  @HttpCode(HttpStatus.OK)
-  @Roles(Role.USER, Role.ADMIN)
-  public async othersPosts(@Param("id") userId: string) {
-    return await this.postService.findAllByOwner(userId)
-  }
- 
-  @Get("petposts/:id")
-  @HttpCode(HttpStatus.OK)
-  @Roles(Role.USER, Role.ADMIN)
-  public async findAllByPetId(@Param("id") petId): Promise<Posts[]> {
-    return this.postService.findAllByPetId(petId);
   }
 
   @Get(":id")
@@ -96,5 +85,19 @@ export class PostController {
   @HttpCode(HttpStatus.NO_CONTENT)
   public async removePostById(@Param("id") postId) {
     await this.postService.deletePostById(postId);
+  }
+
+  @Get("others/:id")
+  @HttpCode(HttpStatus.OK)
+  @Roles(Role.USER, Role.ADMIN)
+  public async othersPosts(@Param("id") userId: string) {
+    return await this.postService.findAllByOwner(userId);
+  }
+
+  @Get("petposts/:id")
+  @HttpCode(HttpStatus.OK)
+  @Roles(Role.USER, Role.ADMIN)
+  public async findAllByPetId(@Param("id") petId): Promise<Posts[]> {
+    return this.postService.findAllByPetId(petId);
   }
 }
