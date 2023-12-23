@@ -63,6 +63,6 @@ export class AdoptionController {
   @Roles(Role.USER, Role.ADMIN)
   @HttpCode(HttpStatus.NO_CONTENT)
   public async toRefuse(@Param("id") adoptionId: string) {
-    return await this.adoptionService.toRefuse(adoptionId);
+    return await this.adoptionService.deleteAdoptionById(adoptionId);
   }
 }

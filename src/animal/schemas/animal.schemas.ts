@@ -27,6 +27,9 @@ export class Animal extends Document {
 
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: "User" })
   dono: User;
+
+  @Prop({ type: [mongoose.Schema.Types.ObjectId], ref: "User" })
+  oldOwners: User;
 }
 
 export const AnimalSchema = SchemaFactory.createForClass(Animal);
