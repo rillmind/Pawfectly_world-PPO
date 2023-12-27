@@ -28,6 +28,20 @@ export class AdoptionService {
     });
   }
 
+  public async findMyAdoptionsNotAnswered(userId) {
+    return await this.adoptionModel.find({
+      owner: userId,
+      $and: [{ accepted: false }, { rejected: false }],
+    });
+  }
+
+  public async findMyAdoptionsAnswered(userId) {
+    return await this.adoptionModel.find({
+      owner: userId,
+      $or: [{ accepted: true }, { rejected: true }],
+    });
+  }
+
   public async toAdopt(
     post_schema_adoption: Post_schema_adoption,
     adopterId: string
@@ -43,6 +57,8 @@ export class AdoptionService {
       pet,
       owner,
       descricao,
+      accepted: false,
+      rejected: false,
       adopter: adopterId,
     });
     if (!adoption) throw new UnprocessableEntityException("Erro de validação.");
@@ -66,6 +82,11 @@ export class AdoptionService {
     await this.animalModel.findByIdAndUpdate(adoption.pet, {
       $push: { oldOwners: adoption.owner },
     });
+    await this.adoptionModel.findByIdAndUpdate(adoptionId, { accepted: true });
+  }
+
+  public async toRefuse(adoptionId: string) {
+    await this.adoptionModel.findByIdAndUpdate(adoptionId, { rejected: true });
   }
 
   public async deleteAdoptionById(adoptionId: string) {

@@ -52,6 +52,22 @@ export class AdoptionController {
     return this.adoptionService.findMyAdoptionRequests(userId);
   }
 
+  @Get("myAdoptionsNotAnswered")
+  @HttpCode(HttpStatus.OK)
+  @Roles(Role.USER, Role.ADMIN)
+  public async findMyAdoptionsNotAnswered(@Req() req) {
+    const userId = req.user.id;
+    return await this.adoptionService.findMyAdoptionsNotAnswered(userId);
+  }
+
+  @Get("myAdoptionsAnswered")
+  @HttpCode(HttpStatus.OK)
+  @Roles(Role.USER, Role.ADMIN)
+  public async findMyAdoptionsAnswered(@Req() req) {
+    const userId = req.user.id;
+    return await this.adoptionService.findMyAdoptionsAnswered(userId);
+  }
+
   @Patch(":id")
   @Roles(Role.USER, Role.ADMIN)
   @HttpCode(HttpStatus.ACCEPTED)
@@ -62,7 +78,14 @@ export class AdoptionController {
   @Delete(":id")
   @Roles(Role.USER, Role.ADMIN)
   @HttpCode(HttpStatus.NO_CONTENT)
-  public async toRefuse(@Param("id") adoptionId: string) {
+  public async deleteAdoptionById(@Param("id") adoptionId: string) {
     return await this.adoptionService.deleteAdoptionById(adoptionId);
+  }
+
+  @Patch("toRefuse/:id")
+  @Roles(Role.USER, Role.ADMIN)
+  @HttpCode(HttpStatus.ACCEPTED)
+  public async toRefuse(@Param("id") adoptionId) {
+    await this.adoptionService.toRefuse(adoptionId);
   }
 }

@@ -15,6 +15,12 @@ export class Adoption extends Document {
   pet: Animal;
 
   @Prop()
+  accepted: boolean;
+
+  @Prop()
+  rejected: boolean;
+
+  @Prop()
   descricao: string;
 }
 
