@@ -5,10 +5,13 @@ import { User } from "src/user/schemas/user.schemas";
 import { Patch_schema_animal, Post_schema_animal } from "./dto/animal.dto";
 import { Animal } from "./schemas/animal.schemas";
 import { Posts } from "src/post/schemas/post.schema";
+import { Vaccination } from "src/vaccination/schemas/vaccination.schema";
 
 @Injectable()
 export class AnimalService {
   constructor(
+    @InjectModel("Vaccination")
+    private vaccinationModel: Model<Vaccination>,
     @InjectModel("Animal")
     private animalModel: Model<Animal>,
     @InjectModel("Post")
@@ -20,7 +23,7 @@ export class AnimalService {
   public async createAnimal(
     userId: string,
     post_schema_animal: Post_schema_animal
-  ): Promise<{ id: any; nome: string; adocao: any; dono: User }> {
+  ): Promise<{ id: any; nome: string; adocao: any; dono: User, vac: any }> {
     const { nome, idade, tipo, raca, sexo, descricao, adocao } =
       post_schema_animal;
     const user = await this.userModel.findById(userId);
@@ -34,7 +37,10 @@ export class AnimalService {
       descricao,
       dono: user,
     });
-    return { id: animal._id, dono: User._id, nome, adocao };
+    const vaccinationCard = await this.vaccinationModel.create({
+      pet: animal._id
+    })
+    return { id: animal._id, dono: User._id, nome, adocao, vac: vaccinationCard._id };
   }
 
   public async findAll(): Promise<Animal[]> {

@@ -20,6 +20,9 @@ export class Animal extends Document {
   sexo: string;
 
   @Prop()
+  pelagem: string;
+
+  @Prop()
   descricao: string;
 
   @Prop()
