@@ -27,14 +27,19 @@ export class VaccinationService {
       vacina,
       revacinacao,
     });
-    await this.vaccinationModel.find({ pet: petId, $push: { vacina: Vacina } });
+    await this.vaccinationModel.findOneAndUpdate(
+      { pet: petId },
+      { $push: { vacina: Vacina } }
+    );
+    // const vaccination = await this.vaccinationModel.find({ pet: petId });
+    // await this.vaccinationModel.findByIdAndUpdate(vaccination, { $push: { vacina: Vacina } })
     return Vacina;
   }
 
   public async findVacinaByPetId(petId: Animal) {
     const vacinas = await this.vaccinationModel.find({ pet: petId });
     if (!vacinas) throw new NotFoundException("Vacinas não encontradas.");
-    return vacinas;
+    return vacinas.map((vacina) => vacina.vacina); // OU RETORNE APENAS 'vacinas' PARA RETORNAR O ARRAY COM O OBJETO TODO
   }
 
   public async findVacinaById(vacinaId) {

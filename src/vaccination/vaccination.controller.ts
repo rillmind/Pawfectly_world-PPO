@@ -20,12 +20,12 @@ import { Role } from "src/auth/enum/roles.enum";
 export class VaccinationController {
   constructor(private readonly vaccinationService: VaccinationService) {}
 
-  @Post()
+  @Post(":id")
   @Roles(Role.USER, Role.ADMIN)
   @HttpCode(HttpStatus.CREATED)
   public async createVacina(
     @Body() post_schema_vacina: Post_schema_vacina,
-    petId: Animal
+    @Param("id") petId: Animal
   ) {
     const vacina = await this.vaccinationService.createVacina(
       post_schema_vacina,
@@ -44,7 +44,7 @@ export class VaccinationController {
   @Roles(Role.USER, Role.ADMIN)
   @HttpCode(HttpStatus.CREATED)
   public async findVacinaByPetId(@Param("id") petId: Animal) {
-    await this.vaccinationService.findVacinaByPetId(petId);
+   return await this.vaccinationService.findVacinaByPetId(petId);
   }
 
   @Delete(":id")
