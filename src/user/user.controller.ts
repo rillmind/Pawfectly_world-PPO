@@ -35,6 +35,7 @@ import {
 } from "./dto/user.dto";
 import { UserOwnershipChecker } from "./owner/user.ownershup.checker";
 import { UserService } from "./user.service";
+import { multerConfig } from "src/diskStorage.config";
 
 @Controller("user")
 @JwtAuth()
@@ -68,25 +69,11 @@ export class UserController {
     return await this.userService.find(cursorDate, pageSizeNumber);
   }
 
-  @Post("ft")
-  @Roles(Role.USER, Role.ADMIN)
-  @HttpCode(HttpStatus.OK)
-  @UseInterceptors(
-    FileInterceptor("file", {
-      storage: diskStorage({
-        destination: "./uploads/",
-        filename: function (req, file, callback) {
-          const fileName =
-            path.parse(file.originalname).name.replace(/\s/g, "") + Date.now();
-          const extension = path.parse(file.originalname).ext;
-          callback(null, `${fileName} ${extension}`);
-        },
-      }),
-    })
-  )
-  public async fotoDePerfil(@UploadedFile() file, @Req() req, @Body() body) {
-    const user = req.user.id;
-    return await this.userService.updateUserById(user, body, file.path);
+  @Post("pic/:id")
+  @UseInterceptors(FileInterceptor("file", multerConfig))
+  async updateUserPicById(@Param("id") userId: string, @UploadedFile() file) {
+    if (!file) throw new NotFoundException("Nenhum arquivo enviado.");
+    return this.userService.patchUserPicById(userId, file);
   }
 
   @Get(":id")

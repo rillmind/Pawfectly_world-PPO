@@ -24,6 +24,9 @@ export class User extends Document {
   @Prop()
   foto_de_perfil: string;
 
+  @Prop({ type: Buffer })
+  foto_de_perfil_buffer: Buffer;
+
   @Prop()
   imgContentType: string;
 

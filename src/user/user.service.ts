@@ -88,29 +88,15 @@ export class UserService {
       .exec();
   }
 
-  async updateUserById(
-    id: string,
-    userData: any,
-    filePath: string
-  ): Promise<User> {
+  async patchUserPicById(id: string, file): Promise<User> {
     const user = await this.userModel.findById(id);
     if (!user) {
       throw new NotFoundException("Usuário não encontrado");
     }
-
-    // Atualize os campos do usuário com base nos dados fornecidos
-    const { nome, username, email, ...otherData } = userData;
-
-    if (nome) user.nome = nome;
-    if (username) user.username = username;
-    if (email) user.email = email;
-    // ... atualize outros campos conforme necessário
-
-    // Se um arquivo de imagem foi carregado, atualize o campo de imagem com o caminho do arquivo
-    if (filePath) {
-      user.foto_de_perfil = filePath; // Supondo que você queira salvar o caminho do arquivo
-    }
-
+    user.foto_de_perfil = file.path;
+    user.foto_de_perfil_buffer = file.buffer;
+    user.imgContentType = file.mimetype;
+    console.log(user.foto_de_perfil_buffer)
     await user.save();
     return user;
   }
