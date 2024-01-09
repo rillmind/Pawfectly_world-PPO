@@ -16,7 +16,9 @@ import { Role } from "src/auth/enum/roles.enum";
 import { AdoptionService } from "./adoption.service";
 import { Post_schema_adoption } from "./dto/adoption.dto";
 import { Adoption } from "./schema/adoption.schema";
+import { ApiTags } from "@nestjs/swagger";
 
+@ApiTags("adoption")
 @Controller("adoption")
 @JwtAuth()
 export class AdoptionController {

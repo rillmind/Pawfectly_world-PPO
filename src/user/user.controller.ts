@@ -12,21 +12,20 @@ import {
   Patch,
   Post,
   Query,
-  Req,
   Res,
   UploadedFile,
-  UseInterceptors,
+  UseInterceptors
 } from "@nestjs/common";
 import { FileInterceptor } from "@nestjs/platform-express";
+import { ApiTags } from "@nestjs/swagger";
 import { Response } from "express";
 import { Types } from "mongoose";
-import { diskStorage } from "multer";
-import path from "path";
 import { JwtAuth } from "src/auth/decorator/jwt.auth.decorator";
 import { OwnerChecker } from "src/auth/decorator/ownership.checker.decorator";
 import { Public } from "src/auth/decorator/public.auth.decorator";
 import { Roles } from "src/auth/decorator/roles.decorator";
 import { Role } from "src/auth/enum/roles.enum";
+import { multerConfig } from "src/user/multer/multer.config";
 import {
   Patch_schema_user,
   Patch_schema_user_data,
@@ -35,8 +34,8 @@ import {
 } from "./dto/user.dto";
 import { UserOwnershipChecker } from "./owner/user.ownershup.checker";
 import { UserService } from "./user.service";
-import { multerConfig } from "src/diskStorage.config";
 
+@ApiTags("user")
 @Controller("user")
 @JwtAuth()
 @OwnerChecker(UserOwnershipChecker)

@@ -16,7 +16,9 @@ import { AuthService } from "./auth.service";
 import { Post_schema_login } from "./dto/login.dto";
 import { Roles } from "./decorator/roles.decorator";
 import { Role } from "./enum/roles.enum";
+import { ApiTags } from "@nestjs/swagger";
 
+@ApiTags("auth")
 @Controller("auth")
 @JwtAuth()
 export class AuthController {

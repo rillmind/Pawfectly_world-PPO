@@ -8,23 +8,22 @@ import {
   Param,
   Post,
   Req,
-  Res,
   UploadedFile,
   UseInterceptors,
 } from "@nestjs/common";
+import { FileInterceptor } from "@nestjs/platform-express";
 import { JwtAuth } from "src/auth/decorator/jwt.auth.decorator";
 import { OwnerChecker } from "src/auth/decorator/ownership.checker.decorator";
 import { Roles } from "src/auth/decorator/roles.decorator";
 import { Role } from "src/auth/enum/roles.enum";
+import { multerConfig } from "src/post/multer/multer.config";
 import { UserOwnershipChecker } from "src/user/owner/user.ownershup.checker";
 import { Post_schema_post } from "./dto/post.dto";
 import { PostService } from "./post.service";
 import { Posts } from "./schemas/post.schema";
-import { diskStorage } from "multer";
-import * as path from "path";
-import { UserInterceptor } from "src/auth/interceptor/jwt.interceptor";
-import { FileInterceptor } from "@nestjs/platform-express";
+import { ApiTags } from "@nestjs/swagger";
 
+@ApiTags("post")
 @Controller("post")
 @JwtAuth()
 @OwnerChecker(UserOwnershipChecker)
@@ -41,18 +40,7 @@ export class PostController {
   @Post()
   @Roles(Role.USER, Role.ADMIN)
   @HttpCode(HttpStatus.CREATED)
-  // @UseInterceptors(
-  //   FileInterceptor("file", {
-  //     storage: diskStorage({
-  //       destination: "./uploads/",
-  //       filename: function (req, file, callback) {
-  //         const fileName = path.parse(file.originalname).name.replace(/\s/g, "") + Date.now();
-  //         const extension = path.parse(file.originalname).ext;
-  //         callback(null, `${fileName} ${extension}`)
-  //       },
-  //     }),
-  //   })
-  // )
+  @UseInterceptors(FileInterceptor("file", multerConfig))
   public async signUp(
     @Body() post_schema_post: Post_schema_post,
     @UploadedFile() file,

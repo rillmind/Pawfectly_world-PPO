@@ -1,11 +1,14 @@
+import { ApiProperty } from "@nestjs/swagger";
 import { IsNotEmpty, IsString } from "class-validator";
 
 export class Post_schema_login {
-  @IsNotEmpty()
   @IsString()
+  @IsNotEmpty()
+  @ApiProperty()
   readonly email_ou_username: string;
 
-  @IsNotEmpty()
   @IsString()
+  @IsNotEmpty()
+  @ApiProperty()
   readonly senha: string;
 }

@@ -21,7 +21,9 @@ import { OwnerChecker } from "src/auth/decorator/ownership.checker.decorator";
 import { AnimalService } from "./animal.service";
 import { Patch_schema_animal, Post_schema_animal } from "./dto/animal.dto";
 import { UserOwnershipChecker } from "src/user/owner/user.ownershup.checker";
+import { ApiTags } from "@nestjs/swagger";
 
+@ApiTags("animal")
 @Controller("animal")
 @JwtAuth()
 @OwnerChecker(UserOwnershipChecker)

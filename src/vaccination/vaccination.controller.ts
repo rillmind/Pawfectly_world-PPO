@@ -14,7 +14,9 @@ import { Animal } from "src/animal/schemas/animal.schemas";
 import { JwtAuth } from "src/auth/decorator/jwt.auth.decorator";
 import { Roles } from "src/auth/decorator/roles.decorator";
 import { Role } from "src/auth/enum/roles.enum";
+import { ApiTags } from "@nestjs/swagger";
 
+@ApiTags("vaccination")
 @Controller("vaccination")
 @JwtAuth()
 export class VaccinationController {
