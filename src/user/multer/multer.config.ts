@@ -1,12 +1,12 @@
-import { diskStorage } from "multer";
+import { diskStorage, memoryStorage } from "multer";
 import * as path from "path";
 
 const date = Date.now();
-// const date = new Date(Now);
 
 export const multerConfig = {
+  // storage: memoryStorage()
   storage: diskStorage({
-    destination: "./uploads/",
+    destination: "./uploads/profilePics/",
     filename: (req, file, cb) => {
       if (file) {
         const filename: string = path

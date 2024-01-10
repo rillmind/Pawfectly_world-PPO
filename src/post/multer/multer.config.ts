@@ -2,11 +2,10 @@ import { diskStorage } from "multer";
 import * as path from "path";
 
 const date = Date.now();
-// const date = new Date(Now);
 
 export const multerConfig = {
   storage: diskStorage({
-    destination: "./uploads/",
+    destination: "./uploads/postFiles/",
     filename: (req, file, cb) => {
       if (file) {
         const filename: string = path

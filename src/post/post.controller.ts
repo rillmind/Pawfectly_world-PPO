@@ -5,7 +5,9 @@ import {
   Get,
   HttpCode,
   HttpStatus,
+  NotFoundException,
   Param,
+  Patch,
   Post,
   Req,
   UploadedFile,
@@ -40,17 +42,19 @@ export class PostController {
   @Post()
   @Roles(Role.USER, Role.ADMIN)
   @HttpCode(HttpStatus.CREATED)
-  @UseInterceptors(FileInterceptor("file", multerConfig))
-  public async signUp(
-    @Body() post_schema_post: Post_schema_post,
-    @UploadedFile() file,
-    @Req() req
-  ) {
+  public async signUp(@Body() post_schema_post: Post_schema_post, @Req() req) {
     const userId = req.user.id;
-    return await this.postService.createPost(
-      post_schema_post,
-      userId /*file.path*/
-    );
+    return await this.postService.createPost(post_schema_post, userId);
+  }
+
+  @Patch("postImg/:id")
+  @UseInterceptors(FileInterceptor("file", multerConfig))
+  public async pathcPostImgByPostId(
+    @Param("id") postId: string,
+    @UploadedFile() file
+  ) {
+    if (!file) throw new NotFoundException("Nenhum arquivo enviado.");
+    return await this.postService.patchImgByPostId(postId, file);
   }
 
   @Get("myposts")

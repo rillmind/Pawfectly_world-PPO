@@ -93,10 +93,10 @@ export class UserService {
     if (!user) {
       throw new NotFoundException("Usuário não encontrado");
     }
-    user.foto_de_perfil = file.path;
-    user.foto_de_perfil_buffer = file.buffer;
-    user.imgContentType = file.mimetype;
-    console.log(user.foto_de_perfil_buffer)
+    user.foto_de_perfil = file.filename;
+    // user.foto_de_perfil = file.path; PARA SALVAR O PATH DO ARQUIVO
+    // user.imgContentType = file.mimetype; PARA SALVAR O TIPO DE ARQUIVO
+    // user.foto_de_perfil_buffer = file.buffer; PARA SALVAR O BUFFER DO ARQUIVO
     await user.save();
     return user;
   }

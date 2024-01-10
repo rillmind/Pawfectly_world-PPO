@@ -39,7 +39,6 @@ export class Post_schema_animal {
   readonly adocao: boolean;
 
   @IsEmpty()
-  @ApiProperty()
   readonly dono: User;
 }
 

@@ -20,8 +20,8 @@ export class Posts extends Document {
   @Prop()
   descricao: string;
 
-  @Prop({ type: Buffer })
-  img: Buffer;
+  @Prop()
+  img: string;
 
   @Prop()
   imgContentType: string;
