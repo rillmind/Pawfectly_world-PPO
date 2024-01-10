@@ -39,7 +39,7 @@ export class VaccinationService {
   public async findVacinaByPetId(petId: Animal) {
     const vacinas = await this.vaccinationModel.find({ pet: petId });
     if (!vacinas) throw new NotFoundException("Vacinas não encontradas.");
-    return vacinas.map((vacina) => vacina.vacina); // OU RETORNE APENAS 'vacinas' PARA RETORNAR O ARRAY COM O OBJETO TODO
+    return vacinas; // OU RETORNE APENAS 'vacinas' PARA RETORNAR O ARRAY COM O OBJETO TODO
   }
 
   public async findVacinaById(vacinaId) {
