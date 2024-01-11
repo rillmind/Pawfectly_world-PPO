@@ -42,9 +42,16 @@ export class VaccinationController {
     };
   }
 
-  @Get(":id")
+  @Get("vacina/:id")
+  @HttpCode(HttpStatus.OK)
   @Roles(Role.USER, Role.ADMIN)
-  @HttpCode(HttpStatus.CREATED)
+  public async findVacinaById(@Param("id") vacinaId) {
+    return await this.vaccinationService.findVacinaById(vacinaId);
+  }
+
+  @Get(":id")
+  @HttpCode(HttpStatus.OK)
+  @Roles(Role.USER, Role.ADMIN)
   public async findVacinaByPetId(@Param("id") petId: Animal) {
    return await this.vaccinationService.findVacinaByPetId(petId);
   }

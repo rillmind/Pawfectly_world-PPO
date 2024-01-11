@@ -5,7 +5,7 @@ const date = Date.now();
 
 export const multerConfig = {
   storage: diskStorage({
-    destination: "./uploads/postFiles/",
+    destination: "./uploads/postPics/",
     filename: (req, file, cb) => {
       if (file) {
         const filename: string = path

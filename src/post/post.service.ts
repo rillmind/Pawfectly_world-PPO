@@ -52,8 +52,7 @@ export class PostService {
   public async patchImgByPostId(id: string, file) {
     const post = await this.postModel.findById(id);
     if (!post) throw new NotFoundException();
-    post.img = file.path;
-    post.imgContentType = file.mimetype;
+    post.img = file.filename;
     await post.save();
     return post;
   }
