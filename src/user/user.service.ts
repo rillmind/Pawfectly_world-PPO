@@ -88,12 +88,18 @@ export class UserService {
       .exec();
   }
 
+  public async getPicByUserId(id: string) {
+    const user = await this.userModel.findById(id).exec();
+    if (!user) throw new NotFoundException("Usuário não encontrado");
+    return user.foto_de_perfil;
+  }
+
   async patchUserPicById(id: string, file): Promise<User> {
     const user = await this.userModel.findById(id);
     if (!user) {
       throw new NotFoundException("Usuário não encontrado");
     }
-    user.foto_de_perfil = file.filename;
+    user.foto_de_perfil = file.path;
     // user.foto_de_perfil = file.path; PARA SALVAR O PATH DO ARQUIVO
     // user.imgContentType = file.mimetype; PARA SALVAR O TIPO DE ARQUIVO
     // user.foto_de_perfil_buffer = file.buffer; PARA SALVAR O BUFFER DO ARQUIVO

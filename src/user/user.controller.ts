@@ -68,11 +68,15 @@ export class UserController {
     return await this.userService.find(cursorDate, pageSizeNumber);
   }
 
+  @Get("pic/:id")
+  public async getPicBydUserId(@Param("id") userId) {
+    return await this.userService.getPicByUserId(userId);
+  }
+
   @Patch("pic/:id")
   @UseInterceptors(FileInterceptor("file", multerConfig))
   async updateUserPicById(@Param("id") userId: string, @UploadedFile() file) {
     if (!file) throw new NotFoundException("Nenhum arquivo enviado.");
-    console.log(file.filename)
     return await this.userService.patchUserPicById(userId, file);
   }
 
