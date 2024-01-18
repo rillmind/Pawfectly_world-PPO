@@ -69,11 +69,13 @@ export class UserController {
   }
 
   @Get("pic/:id")
+  @Roles(Role.ADMIN, Role.USER)
   public async getPicBydUserId(@Param("id") userId) {
     return await this.userService.getPicByUserId(userId);
   }
 
   @Patch("pic/:id")
+  @Roles(Role.ADMIN, Role.USER)
   @UseInterceptors(FileInterceptor("file", multerConfig))
   async updateUserPicById(@Param("id") userId: string, @UploadedFile() file) {
     if (!file) throw new NotFoundException("Nenhum arquivo enviado.");
