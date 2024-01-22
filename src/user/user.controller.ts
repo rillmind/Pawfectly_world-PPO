@@ -71,7 +71,7 @@ export class UserController {
   @Get("pic/:id")
   @Roles(Role.ADMIN, Role.USER)
   public async getPicBydUserId(@Param("id") userId) {
-    return "C:\\hoje\\Pawfectly_world-PPO" + await this.userService.getPicByUserId(userId);
+    return "C:\\hoje\\Pawfectly_world-PPO\\" + await this.userService.getPicByUserId(userId);
   }
 
   @Patch("pic/:id")
