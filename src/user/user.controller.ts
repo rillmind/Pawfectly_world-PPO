@@ -14,7 +14,7 @@ import {
   Query,
   Res,
   UploadedFile,
-  UseInterceptors
+  UseInterceptors,
 } from "@nestjs/common";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { ApiTags } from "@nestjs/swagger";
@@ -25,7 +25,6 @@ import { OwnerChecker } from "src/auth/decorator/ownership.checker.decorator";
 import { Public } from "src/auth/decorator/public.auth.decorator";
 import { Roles } from "src/auth/decorator/roles.decorator";
 import { Role } from "src/auth/enum/roles.enum";
-import { multerConfig } from "src/user/multer/multer.config";
 import {
   Patch_schema_user,
   Patch_schema_user_data,
@@ -71,12 +70,13 @@ export class UserController {
   @Get("pic/:id")
   @Roles(Role.ADMIN, Role.USER)
   public async getPicBydUserId(@Param("id") userId) {
-    return "C:\\hoje\\Pawfectly_world-PPO\\" + await this.userService.getPicByUserId(userId);
+    const pic = await this.userService.getPicByUserId(userId);
+    return { pic };
   }
 
   @Patch("pic/:id")
   @Roles(Role.ADMIN, Role.USER)
-  @UseInterceptors(FileInterceptor("file", multerConfig))
+  @UseInterceptors(FileInterceptor("file"))
   async updateUserPicById(@Param("id") userId: string, @UploadedFile() file) {
     if (!file) throw new NotFoundException("Nenhum arquivo enviado.");
     return await this.userService.patchUserPicById(userId, file);

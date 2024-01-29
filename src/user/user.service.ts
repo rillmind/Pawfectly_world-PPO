@@ -16,6 +16,7 @@ import {
   Post_schema_user,
 } from "./dto/user.dto";
 import { User } from "./schemas/user.schemas";
+import { createClient } from "@supabase/supabase-js";
 
 @Injectable()
 export class UserService {
@@ -94,17 +95,32 @@ export class UserService {
     return user.foto_de_perfil;
   }
 
-  async patchUserPicById(id: string, file): Promise<User> {
+  public async patchUserPicById(id: string, file): Promise<User> {
+    // Fazendo o upload da imagem para o Supabase
+    const imageUrl = await this.uploadToSupabase(file);
+
+    // Encontrando e atualizando o usuário
     const user = await this.userModel.findById(id);
     if (!user) {
       throw new NotFoundException("Usuário não encontrado");
     }
-    user.foto_de_perfil = file.path;
-    // user.foto_de_perfil = file.path; PARA SALVAR O PATH DO ARQUIVO
-    // user.imgContentType = file.mimetype; PARA SALVAR O TIPO DE ARQUIVO
-    // user.foto_de_perfil_buffer = file.buffer; PARA SALVAR O BUFFER DO ARQUIVO
+    user.foto_de_perfil = imageUrl;
     await user.save();
     return user;
+  }
+
+  private async uploadToSupabase(file) {
+    const supabaseURL = process.env.SUPABASE_URL;
+    const supabaseKEY = process.env.SUPABASE_KEY;
+    const supabase = createClient(supabaseURL, supabaseKEY);
+    const uploadPath = `profilePic/${file.originalname}`;
+    const { error, data } = await supabase.storage
+      .from("profilePic")
+      .upload(uploadPath, file.buffer, {
+        upsert: true,
+      });
+    if (error) throw new Error("Erro no upload da imagem");
+    return `${supabaseURL}/storage/v1/object/public/profilePic/${uploadPath}`;
   }
 
   public async patchUserById(
