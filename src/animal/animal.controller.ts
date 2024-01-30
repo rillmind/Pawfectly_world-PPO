@@ -84,7 +84,7 @@ export class AnimalController {
 
   @Get("pic/:id")
   @Roles(Role.ADMIN, Role.USER)
-  public async getPicBydUserId(@Param("id") userId) {
+  public async getPicBydPetId(@Param("id") userId) {
     const pic = await this.animalService.getPicByPetId(userId);
     return { pic };
   }
@@ -92,7 +92,7 @@ export class AnimalController {
   @Patch("pic/:id")
   @Roles(Role.ADMIN, Role.USER)
   @UseInterceptors(FileInterceptor("file"))
-  async updateUserPicById(@Param("id") userId: string, @UploadedFile() file) {
+  async updatePetPicById(@Param("id") userId: string, @UploadedFile() file) {
     if (!file) throw new NotFoundException("Nenhum arquivo enviado.");
     return await this.animalService.patchPetPicById(userId, file);
   }

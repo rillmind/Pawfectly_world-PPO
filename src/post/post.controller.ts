@@ -47,6 +47,21 @@ export class PostController {
     return await this.postService.createPost(post_schema_post, userId);
   }
 
+  @Get("pic/:id")
+  @Roles(Role.ADMIN, Role.USER)
+  public async getPicBydPostId(@Param("id") userId) {
+    const pic = await this.postService.getPicByPostId(userId);
+    return { pic };
+  }
+
+  @Patch("pic/:id")
+  @Roles(Role.ADMIN, Role.USER)
+  @UseInterceptors(FileInterceptor("file"))
+  async updatePostPicById(@Param("id") userId: string, @UploadedFile() file) {
+    if (!file) throw new NotFoundException("Nenhum arquivo enviado.");
+    return await this.postService.patchPostPicById(userId, file);
+  }
+
   @Patch("postImg/:id")
   @UseInterceptors(FileInterceptor("file", multerConfig))
   public async pathcPostImgByPostId(

@@ -24,9 +24,6 @@ export class Posts extends Document {
   img: string;
 
   @Prop()
-  imgContentType: string;
-
-  @Prop()
   like: boolean;
 }
 

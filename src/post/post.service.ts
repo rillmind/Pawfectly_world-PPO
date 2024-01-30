@@ -8,6 +8,7 @@ import { Model } from "mongoose";
 import { User } from "src/user/schemas/user.schemas";
 import { Post_schema_post } from "./dto/post.dto";
 import { Posts } from "./schemas/post.schema";
+import { createClient } from "@supabase/supabase-js";
 
 @Injectable()
 export class PostService {
@@ -47,6 +48,37 @@ export class PostService {
       pet,
       descricao: post.descricao,
     };
+  }
+
+  public async getPicByPostId(id: string) {
+    const user = await this.userModel.findById(id).exec();
+    if (!user) throw new NotFoundException("Usuário não encontrado");
+    return user.foto_de_perfil;
+  }
+
+  public async patchPostPicById(id: string, file){
+    const imageUrl = await this.uploadToSupabase(file);
+    const post = await this.postModel.findById(id);
+    if (!post) {
+      throw new NotFoundException("Usuário não encontrado");
+    }
+    post.img = imageUrl;
+    await post.save();
+    return post;
+  }
+
+  private async uploadToSupabase(file) {
+    const supabaseURL = process.env.SUPABASE_URL;
+    const supabaseKEY = process.env.SUPABASE_KEY;
+    const supabase = createClient(supabaseURL, supabaseKEY);
+    const uploadPath = `profilePic/${file.originalname}`;
+    const { error, data } = await supabase.storage
+      .from("profilePic")
+      .upload(uploadPath, file.buffer, {
+        upsert: true,
+      });
+    if (error) throw new Error("Erro no upload da imagem");
+    return `${supabaseURL}/storage/v1/object/public/profilePic/${uploadPath}`;
   }
 
   public async patchImgByPostId(id: string, file) {
