@@ -6,6 +6,7 @@ import { Patch_schema_animal, Post_schema_animal } from "./dto/animal.dto";
 import { Animal } from "./schemas/animal.schemas";
 import { Posts } from "src/post/schemas/post.schema";
 import { Vaccination } from "src/vaccination/schemas/vaccination.schema";
+import { createClient } from "@supabase/supabase-js";
 
 @Injectable()
 export class AnimalService {
@@ -63,6 +64,37 @@ export class AnimalService {
     const animal = await this.animalModel.findById(id).exec();
     if (!animal) throw new NotFoundException("Pet não encontrado");
     return animal;
+  }
+
+  public async getPicByPetId(id: string) {
+    const user = await this.userModel.findById(id).exec();
+    if (!user) throw new NotFoundException("Usuário não encontrado");
+    return user.foto_de_perfil;
+  }
+
+  public async patchPetPicById(id: string, file){
+    const imageUrl = await this.uploadToSupabase(file);
+    const pet = await this.animalModel.findById(id);
+    if (!pet) {
+      throw new NotFoundException("Usuário não encontrado");
+    }
+    pet.foto_de_perfil = imageUrl;
+    await pet.save();
+    return pet;
+  }
+
+  private async uploadToSupabase(file) {
+    const supabaseURL = process.env.SUPABASE_URL;
+    const supabaseKEY = process.env.SUPABASE_KEY;
+    const supabase = createClient(supabaseURL, supabaseKEY);
+    const uploadPath = `profilePic/${file.originalname}`;
+    const { error, data } = await supabase.storage
+      .from("profilePic")
+      .upload(uploadPath, file.buffer, {
+        upsert: true,
+      });
+    if (error) throw new Error("Erro no upload da imagem");
+    return `${supabaseURL}/storage/v1/object/public/profilePic/${uploadPath}`;
   }
 
   public async patchById(

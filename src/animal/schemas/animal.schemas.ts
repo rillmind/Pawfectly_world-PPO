@@ -28,6 +28,9 @@ export class Animal extends Document {
   @Prop()
   adocao: boolean;
 
+  @Prop()
+  foto_de_perfil: string;
+
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: "User" })
   dono: User;
 

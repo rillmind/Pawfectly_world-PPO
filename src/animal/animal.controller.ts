@@ -11,6 +11,8 @@ import {
   HttpStatus,
   NotFoundException,
   BadRequestException,
+  UploadedFile,
+  UseInterceptors,
 } from "@nestjs/common";
 import { Role } from "src/auth/enum/roles.enum";
 import { Roles } from "src/auth/decorator/roles.decorator";
@@ -22,6 +24,7 @@ import { AnimalService } from "./animal.service";
 import { Patch_schema_animal, Post_schema_animal } from "./dto/animal.dto";
 import { UserOwnershipChecker } from "src/user/owner/user.ownershup.checker";
 import { ApiTags } from "@nestjs/swagger";
+import { FileInterceptor } from "@nestjs/platform-express";
 
 @ApiTags("animal")
 @Controller("animal")
@@ -77,6 +80,21 @@ export class AnimalController {
   @Roles(Role.ADMIN, Role.USER)
   public async findById(@Param("id") id: string) {
     return await this.animalService.findById(id);
+  }
+
+  @Get("pic/:id")
+  @Roles(Role.ADMIN, Role.USER)
+  public async getPicBydUserId(@Param("id") userId) {
+    const pic = await this.animalService.getPicByPetId(userId);
+    return { pic };
+  }
+
+  @Patch("pic/:id")
+  @Roles(Role.ADMIN, Role.USER)
+  @UseInterceptors(FileInterceptor("file"))
+  async updateUserPicById(@Param("id") userId: string, @UploadedFile() file) {
+    if (!file) throw new NotFoundException("Nenhum arquivo enviado.");
+    return await this.animalService.patchPetPicById(userId, file);
   }
 
   @Patch(":id")

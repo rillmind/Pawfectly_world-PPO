@@ -96,10 +96,7 @@ export class UserService {
   }
 
   public async patchUserPicById(id: string, file): Promise<User> {
-    // Fazendo o upload da imagem para o Supabase
     const imageUrl = await this.uploadToSupabase(file);
-
-    // Encontrando e atualizando o usuário
     const user = await this.userModel.findById(id);
     if (!user) {
       throw new NotFoundException("Usuário não encontrado");
