@@ -21,4 +21,5 @@ async function bootstrap() {
   writeFileSync("./swagger-spec.json", JSON.stringify(document, null, 2));
   await app.listen(2306);
 }
-bootstrap();
+bootstrap(); 
+
