@@ -24,7 +24,9 @@
 
 ## Description
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+API back-end desenvolvida com NestJS e TypeScript como projeto de conclusão do curso técnico em Informática. Sistema voltado ao mundo pet, com módulos de animais, adoção, autenticaçã e posts.
+Utilizei o Supabse para armazenamento de imagens.  Aplicou arquitetura modular, injeção de dependência, MongoDB como banco de dados e boas práticas de API REST. Estrutura com src/ e test/ separados.
+O projeto de api é pensado para ser consumida por um front-end feito por um colega do curso técnico que fez dupla comigo.
 
 ## Installation
 
